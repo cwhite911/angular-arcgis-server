@@ -11,9 +11,6 @@
         this.conn = {
           protocol: conn.protocol || 'http://',
           host: conn.host || '',
-          subdomain: conn.subdomain || '',
-          domain: conn.domain,
-          port: conn.port || '',
           path: conn.path || '/arcgis/rest/services'
         };
         return this;
@@ -23,6 +20,11 @@
         resetConn: function (conn){
           angular.extend(this.conn, conn);
           return this;
+        },
+        //Checks if host is set and return connection string, if host is not set return error message to console
+        getConn: function () {
+          var c = this.conn;
+          c.host ? return c.protocol + '/' + c.host + '/' + c.path : return console.log('Error: Please set host');
         }
       };
       return (Server);
