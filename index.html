@@ -2,16 +2,22 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Angular-ArcGIS-Server</title>
   <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
 </head>
-<body ng-app="angular-arcgis-server">
+<body ng-app="app">
   <h1>Angular-ArcGIS-Server</h1>
-  <div ng-view=""></div>
+  <div ng-view></div>
+   <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+   <![endif]-->
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-cookies/angular-cookies.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="./angular-arcgis-server.js"></script>
+  <script src="angular-arcgis-server.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

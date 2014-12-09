@@ -1,10 +1,10 @@
 (function(window, document, undefined){
   'use strict';
-  var app = angular.module('angular-arcgis-server', [
+  var app = angular.module('agsserver', [
     'ngCookies',
     'ngResource'
   ]);
-  app.factory('agsFactory', ['$resource', '$cacheFactory',
+  app.factory('ags', ['$resource', '$cacheFactory',
     function($resource, $cacheFactory){
       var base = $cacheFactory('base');
       //Create connection to ArcGIS REST Services Directory
@@ -57,4 +57,4 @@
       return (Server);
     }
   ]);
-});
+})();
