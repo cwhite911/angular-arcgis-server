@@ -10,7 +10,7 @@
       //Create connection to ArcGIS REST Services Directory
       var Server = function (conn){
         this.conn = {
-          protocol: conn.protocol || 'http://',
+          protocol: conn.protocol || 'http',
           host: conn.host || '',
           path: conn.path || '/arcgis/rest/services'
         };
@@ -25,8 +25,9 @@
         //Checks if host is set and return connection string, if host is not set return error message to console
         getConn: function () {
           var c = this.conn;
-          var url = c.protocol + '/' + c.host + '/' + c.path;
+          var url = c.protocol + '://' + c.host + c.path;
           c.host ? url : console.log('Error: Please set host');
+          return url;
         },
         //Get data from ArcGIS REST Services Directory
         connect: function (format){
