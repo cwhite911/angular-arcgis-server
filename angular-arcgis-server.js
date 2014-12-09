@@ -1,4 +1,4 @@
-(function(){
+(function(window, document, undefined){
   'use strict';
   var app = angular.module('angular-arcgis-server', [
     'ngCookies',
@@ -25,7 +25,8 @@
         //Checks if host is set and return connection string, if host is not set return error message to console
         getConn: function () {
           var c = this.conn;
-          c.host ? return c.protocol + '/' + c.host + '/' + c.path : console.log('Error: Please set host');
+          var url = c.protocol + '/' + c.host + '/' + c.path;
+          c.host ? url : console.log('Error: Please set host');
         },
         //Get data from ArcGIS REST Services Directory
         connect: function (format){
@@ -33,7 +34,7 @@
           try {
             var inFormat = format || {f:'json'};
             var types = ['json', 'wsdl'];
-            typeof(inF) === Object && inFormat.f in types ? inFormat : throw 'Please check that you set a valid format object';
+            typeof(inF) === Object && inFormat.f in types ? inFormat : console.log('Please check that you set a valid format object');
           }
           catch (err){
             console.log(err);
