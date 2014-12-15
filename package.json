@@ -1,0 +1,27 @@
+{
+  "name": "angular-arcgis-server",
+  "version": "1.0.0",
+  "description": "Test environment for angular-arcgis-server module",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cwhite911/angular-arcgis-server.git"
+  },
+  "keywords": [
+    "angular",
+    "arcgis"
+  ],
+  "author": "Corey White",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cwhite911/angular-arcgis-server/issues"
+  },
+  "homepage": "https://github.com/cwhite911/angular-arcgis-server",
+  "dependencies": {
+    "express": "^4.10.6"
+  }
+}
