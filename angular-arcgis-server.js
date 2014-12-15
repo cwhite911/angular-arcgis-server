@@ -35,7 +35,7 @@
           try {
             var inFormat = format || {f:'json'};
             var types = ['json', 'wsdl'];
-            typeof(inF) === Object && inFormat.f in types ? inFormat : console.log('Please check that you set a valid format object');
+            typeof(inF) === 'object' && inFormat.f in types ? inFormat : console.log('Please check that you set a valid format object');
           }
           catch (err){
             console.log(err);
