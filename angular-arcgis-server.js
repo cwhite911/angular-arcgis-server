@@ -4,7 +4,7 @@
     'ngCookies',
     'ngResource'
   ]);
-  app.factory('ags', ['$resource', '$cacheFactory',
+  app.factory('Ags', ['$resource', '$cacheFactory',
     function($resource, $cacheFactory){
       var base = $cacheFactory('base');
       //Create connection to ArcGIS REST Services Directory
