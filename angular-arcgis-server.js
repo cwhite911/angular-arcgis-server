@@ -4,8 +4,8 @@
     'ngCookies',
     'ngResource'
   ]);
-  app.factory('Ags', ['$resource', '$cacheFactory',
-    function($resource, $cacheFactory){
+  app.factory('Ags', ['$resource', '$cacheFactory', '$http',
+    function($resource, $cacheFactory, $http){
       var base = $cacheFactory('base');
       //Create connection to ArcGIS REST Services Directory
       var Server = function (conn){
@@ -35,7 +35,8 @@
           try {
             var inFormat = format || {f:'json'};
             var types = ['json', 'wsdl'];
-            typeof(inF) === 'object' && inFormat.f in types ? inFormat : console.log('Please check that you set a valid format object');
+            console.log(typeof inFormat);
+            typeof(inFormat) === 'object' && inFormat.f.indexOf(types) ? inFormat : console.log('Please check that you set a valid format object');
           }
           catch (err){
             console.log(err);
@@ -52,6 +53,33 @@
           var serviceDirectory = $resource(this.getConn, inFormat, actions);
           //Need to figure out if I want to return resource or results
           return serviceDirectory;
+        },
+        //Parse throgh server
+        load: function (options){
+          //Checks for valid input
+          try {
+            var options = options || {f:'json'};
+            var types = ['json', 'wsdl'];
+            console.log(typeof options);
+            typeof(options) === 'object' && options.f.indexOf(types) ? options : console.log('Please check that you set a valid format object');
+          }
+          catch (err){
+            console.log(err);
+          }
+          var that = this;
+          //Get host
+          var baseUrl = that.getConn();
+          console.log(baseUrl);
+          //Set config
+          var config = {
+            params: options,
+            cache: base
+          };
+          //Get the base of ArcGIS server file structure
+          $http.get(baseUrl, config).success(function(res){
+            console.log(res);
+          });
+
         }
       };
       //Returns server contructor class
