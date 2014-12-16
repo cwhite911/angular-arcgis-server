@@ -7,7 +7,7 @@ angular.module('app', ['agsserver']).
     //Gets connection string
     $scope.serverString = testServer.getConn();
     //Connect Method
-    var myServer = testServer.load();
+    $scope.myServer = testServer.load();
 
     //TODO- CREATE server parse
     //Example:

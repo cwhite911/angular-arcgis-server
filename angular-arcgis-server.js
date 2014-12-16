@@ -76,10 +76,11 @@
             cache: base
           };
           //Get the base of ArcGIS server file structure
-          $http.get(baseUrl, config).success(function(res){
-            console.log(res);
+          $http.get(baseUrl, config).success(function(data, status){
+            angular.extend(that.conn, data);
+            console.log(status + ": Base Directory Successfuly Loaded");
           });
-
+          return that.conn;
         }
       };
       //Returns server contructor class

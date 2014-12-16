@@ -10,8 +10,21 @@
 </head>
 <body ng-app="app">
   <h1>Angular-ArcGIS-Server</h1>
-  <div ng-controller="test">
+  <div class="server" ng-controller="test">
     <h2>Server String: {{serverString}}</h2>
+    <h3>Version: {{myServer.currentVersion}}</h3>
+    <div class="folders">
+      <h2>Root Folders:</h2>
+      <ul>
+        <li ng-repeat="folder in myServer.folders">{{folder}}</li>
+      </ul>
+    </div>
+    <div class="services">
+      <h2>Root Services:</h2>
+      <ul>
+        <li ng-repeat="service in myServer.services">{{service}}</li>
+      </ul>
+    </div>
   </div>
   <div ng-view>
 
