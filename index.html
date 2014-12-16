@@ -16,7 +16,13 @@
     <div class="folders">
       <h2>Root Folders:</h2>
       <ul>
-        <li ng-repeat="folder in myServer.folders">{{folder}}</li>
+        <li ng-repeat="folder in myServer.folders">{{folder.name}}
+          <ul>
+            <li ng-repeat="service in folder.services">
+              <p>Name: {{service.name}} ({{service.type}})</p>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
     <div class="services">

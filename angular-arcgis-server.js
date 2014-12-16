@@ -79,6 +79,19 @@
           $http.get(baseUrl, config).success(function(data, status){
             angular.extend(that.conn, data);
             console.log(status + ": Base Directory Successfuly Loaded");
+            //Checks if folders are empty
+            if (that.conn.folders){
+              var folderUrl;
+              //Loops through each folder setting folders and services
+              that.conn.folders.forEach(function(folder){
+                folderUrl = baseUrl + '/' + folder;
+                $http.get(folderUrl, config).success(function(data, status){
+                  //Rebuilds data structures with new data
+                  that.conn.folders[that.conn.folders.indexOf(folder)] = {name: folder, folders: data.folders, services: data.services};
+                  console.log(status + ": Folders/Services Successfuly Loaded");
+                });
+              });
+            }
           });
           return that.conn;
         }
