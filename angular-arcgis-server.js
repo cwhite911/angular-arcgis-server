@@ -54,8 +54,19 @@
           //Need to figure out if I want to return resource or results
           return serviceDirectory;
         },
+        //Method that returns directory structure
+        getDirectoryStructure: function (url, options){
+          //Set config
+          var config = {
+            params: options,
+            cache: base
+          };
+
+        },
         //Parse throgh server
         load: function (options){
+          var serviceUrl,
+              folderUrl;
           //Checks for valid input
           try {
             var options = options || {f:'json'};
@@ -78,17 +89,24 @@
           //Get the base of ArcGIS server file structure
           $http.get(baseUrl, config).success(function(data, status){
             angular.extend(that.conn, data);
-            console.log(status + ": Base Directory Successfuly Loaded");
+            console.log(status + ": Base Directory");
             //Checks if folders are empty
             if (that.conn.folders){
-              var folderUrl;
               //Loops through each folder setting folders and services
               that.conn.folders.forEach(function(folder){
                 folderUrl = baseUrl + '/' + folder;
                 $http.get(folderUrl, config).success(function(data, status){
                   //Rebuilds data structures with new data
                   that.conn.folders[that.conn.folders.indexOf(folder)] = {name: folder, folders: data.folders, services: data.services};
-                  console.log(status + ": Folders/Services Successfuly Loaded");
+                  console.log(status + ": Folders/Services");
+                  //Loop through services structure
+                  data.services.forEach(function(data){
+                    serviceUrl = baseUrl + '/' + data.name + '/' + data.type;
+                    angular.extend(config.params, {f: 'pjson'});
+                    $http.get(serviceUrl, config).success(function(data, status){
+                      console.log(data);
+                    });
+                  });
                 });
               });
             }
