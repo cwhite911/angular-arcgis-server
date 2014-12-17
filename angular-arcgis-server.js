@@ -4,8 +4,8 @@
     'ngCookies',
     'ngResource'
   ]);
-  app.factory('Ags', ['$resource', '$cacheFactory', '$http',
-    function($resource, $cacheFactory, $http){
+  app.factory('Ags', ['$resource', '$cacheFactory', '$http', '$q',
+    function($resource, $cacheFactory, $http, $q){
       var base = $cacheFactory('base');
       //Create connection to ArcGIS REST Services Directory
       var Server = function (conn){
@@ -14,6 +14,7 @@
           host: conn.host || '',
           path: conn.path || '/arcgis/rest/services'
         };
+        this.server = {};
         return this;
       };
       Server.prototype = {
@@ -71,7 +72,6 @@
           try {
             var options = options || {f:'json'};
             var types = ['json', 'wsdl'];
-            console.log(typeof options);
             typeof(options) === 'object' && options.f.indexOf(types) ? options : console.log('Please check that you set a valid format object');
           }
           catch (err){
@@ -80,7 +80,6 @@
           var that = this;
           //Get host
           var baseUrl = that.getConn();
-          console.log(baseUrl);
           //Set config
           var config = {
             params: options,
@@ -112,6 +111,27 @@
             }
           });
           return that.conn;
+        },
+        getBase: function(){
+        //Get host
+          var baseUrl = this.getConn();
+          //Set config
+          var config = {
+            params: {f:'json'},
+            cache: base
+          };
+          //Gets the base of the ArcGIS server structure
+          return $http.get(baseUrl, config).then(function(res){
+              if (typeof res.data === 'object') {
+	               return res.data;
+	            }
+              else {
+	            // invalid response
+	               return $q.reject(res.data);
+	            }
+            }, function(res){
+              return $q.reject(res.data);
+            });
         }
       };
       //Returns server contructor class

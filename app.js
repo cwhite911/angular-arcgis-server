@@ -9,6 +9,10 @@ angular.module('app', ['agsserver']).
     //Connect Method
     $scope.myServer = testServer.load();
 
+    testServer.getBase().then(function(data){
+      $scope.testPromise = data;
+    });
+
     //TODO- CREATE server parse
     //Example:
     //Create Server
