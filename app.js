@@ -8,7 +8,7 @@ angular.module('app', ['agsserver']).
     $scope.serverString = testServer.getConn();
     //Connect Method
     $scope.myServer = testServer.load();
-
+    console.log($scope.myServer);
     testServer.getBase().then(function(data){
       $scope.testPromise = data;
     });

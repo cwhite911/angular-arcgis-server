@@ -14,7 +14,6 @@
           host: conn.host || '',
           path: conn.path || '/arcgis/rest/services'
         };
-        this.server = {};
         return this;
       };
       Server.prototype = {
@@ -30,6 +29,31 @@
           c.host ? url : console.log('Error: Please set host');
           return url;
         },
+        //Server Actions
+        actions: [{
+            type: 'query',
+            method: 'GET' || 'POST'
+          },
+          {
+            type: 'applyEdits',
+            method: 'POST'
+          },
+          {
+            type: 'addFeatures',
+            method: 'POST'
+          },
+          {
+            type: 'updateFeatures',
+            method: 'POST'
+          },
+          {
+            type: 'deleteFeatures',
+            method: 'POST'
+          },
+          {
+            type: 'generateRenderer',
+            method: 'GET' || 'POST'
+          }],
         //Get data from ArcGIS REST Services Directory
         connect: function (format){
           //Checks for valid input
@@ -132,6 +156,37 @@
             }, function(res){
               return $q.reject(res.data);
             });
+        },
+        getFolder: function() {
+          //Get ArcGIS Server folder details
+        },
+        //ADD FEATURE, DELETE FEATURE, UPDATE FEATURE, GET FEATURE
+        request: function (options){
+          ///Example Options
+          // options = {
+          //   folder: 'GEWA',
+          //   layer: 'Streams',
+          //   service: 'gewa_sde',
+          //   server: 'FeatureServer' || 'MapServer' || 'GPServer',
+          //   params: {},
+          //   header: {
+          //     'Content-Type': undefined
+          //   },
+          //   timeout: 5000,
+          //   method: 'GET' || 'POST',
+          //   geojson: true || false,
+          //   actions: 'query'
+          // };
+          //Get host
+            var baseUrl = this.getConn(),
+                url;
+            //Set config
+            var config = {
+              params: {f:'json'},
+              cache: base
+            };
+            url = baseUrl + '/' + folder +
+            $http.get(url)
         }
       };
       //Returns server contructor class
