@@ -11,15 +11,15 @@
 <body ng-app="app">
   <h1>Angular-ArcGIS-Server</h1>
   <div class="server" ng-controller="test">
-    <h2>Server String: {{serverString}}</h2>
-    <h3>Version: {{myServer.currentVersion}}</h3>
+    <h2>Server String:</h2>
+    <h3>Version:</h3>
     <div class="folders">
       <h2>Root Folders:</h2>
       <ul>
-        <li ng-repeat="folder in myServer.folders">{{folder.name}}
+        <li>
           <ul>
-            <li ng-repeat="service in folder.services">
-              <p>Name: {{service.name}} ({{service.type}})</p>
+            <li>
+              <p>Name:</p>
             </li>
           </ul>
         </li>
@@ -28,7 +28,7 @@
     <div class="services">
       <h2>Root Services:</h2>
       <ul>
-        <li ng-repeat="service in myServer.services">Name: {{service.name}} ({{service.type}})</li>
+        <li>Name:</li>
       </ul>
     </div>
     <pre>{{myServer.actions}}</pre>

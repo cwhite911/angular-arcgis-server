@@ -4,9 +4,38 @@
     'ngCookies',
     'ngResource'
   ]);
-  app.factory('Ags', ['$resource', '$cacheFactory', '$http', '$q',
-    function($resource, $cacheFactory, $http, $q){
+  app.factory('Ags', ['$cacheFactory', '$http', '$q',
+    function($cacheFactory, $http, $q){
       var base = $cacheFactory('base');
+
+
+      //Return layers from cache
+      var getLayers = function (options){
+        //Find correct layer id
+        for (var _i = o, _len = that.layers.length; _i < _len; _i++ ){
+          //Check for matching folder
+          if(that.layers[_i].folder === options.folder){
+            var _service = that.layers[_i].service;
+            //Loop through services
+            _service.forEach(function(_info){
+              if(_service[_info].name === options.service && _service[_info].server === options.server){
+                return _service[_info].layers;
+              }
+            });
+          }
+        }
+      };
+
+      //Returns layer id
+      var getLayerId = function (_layers, layerName) {
+        _layers.forEach(function(layer){
+          if (layerName === layer.name){
+            return layer.id;
+          }
+          });
+      };
+
+
       //Create connection to ArcGIS REST Services Directory
       var Server = function (conn){
         this.conn = {
@@ -77,9 +106,6 @@
               return $q.reject(res.data);
             });
         },
-        getFolder: function() {
-          //Get ArcGIS Server folder details
-        },
         //ADD FEATURE, DELETE FEATURE, UPDATE FEATURE, GET FEATURE
         ///Example Options//////////////////////////////////////////////////
         // options = {
@@ -108,15 +134,39 @@
               cache: base
             };
             url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+            //Check if url response is already cached
             if(base.get(url)){
-              //Do something
+              var layers = getLayers(options);
+              layers.forEach(function(layer){
+                if (options.layer === layer.name){
+                  //Request parameters
+                  var req = {
+                     method: options.method,
+                     url: url + '/' + layer.id + '/' + options.actions,
+                     headers: options.headers,
+                     params: options.params,
+                   };
+
+                  return $http(req).then(function(res){
+                    if (typeof res.data === 'object') {
+                       return res.data;
+                    }
+                    else {
+                    // invalid response
+                       return $q.reject(res.data);
+                    }
+                  }, function(res){
+                    return $q.reject(res.data);
+                  });
+                }
+              });
             }
             else {
               //Get the layer and table information from server if it is not already cached
-              $http.get(url, config).then(function(res){
+              $http.get(url, config).success(function(res){
                 base.put(url, true);
                 //Concat layers and tables array
-                var _layers = res.data.layers.concat(res.data.tables);
+                var _layers = res.layers.concat(res.tables);
                 //set layers if layer has not been set
                 _layers.length > 0 && that.layers.length === 0 ?
                   that.layers = [{
@@ -127,7 +177,33 @@
                       layers: _layers
                     }],
                   }] : that.layers;
-                console.log(that.layers);
+
+                //Make Request
+
+                    //Request parameters
+                    var req = {
+                       method: options.method,
+                       url: url + '/' + getLayerId(_layers, options.layer) + '/' + options.actions,
+                       headers: options.headers,
+                       params: options.params,
+                       timeout: options.timeout
+                     };
+
+                    return $http(req).then(function(res){
+                      if (typeof res.data === 'object') {
+                         return res.data;
+                      }
+                      else {
+                      // invalid response
+                         return $q.reject(res.data);
+                      }
+                    }, function(res){
+                      //Something went wrong
+                        return $q.reject(res.data);
+                    });
+
+
+
               });
             }
         }
