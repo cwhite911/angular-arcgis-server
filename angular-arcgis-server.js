@@ -54,88 +54,8 @@
             type: 'generateRenderer',
             method: 'GET' || 'POST'
           }],
-        //Get data from ArcGIS REST Services Directory
-        connect: function (format){
-          //Checks for valid input
-          try {
-            var inFormat = format || {f:'json'};
-            var types = ['json', 'wsdl'];
-            console.log(typeof inFormat);
-            typeof(inFormat) === 'object' && inFormat.f.indexOf(types) ? inFormat : console.log('Please check that you set a valid format object');
-          }
-          catch (err){
-            console.log(err);
-          }
-          //Setting up action for resource
-          var actions = {
-            'get': {
-              method: 'GET',
-              cache: base,
-              timeout: 5000
-            }
-          };
-          //Defines resource
-          var serviceDirectory = $resource(this.getConn, inFormat, actions);
-          //Need to figure out if I want to return resource or results
-          return serviceDirectory;
-        },
-        //Method that returns directory structure
-        getDirectoryStructure: function (url, options){
-          //Set config
-          var config = {
-            params: options,
-            cache: base
-          };
-
-        },
-        //Parse throgh server
-        load: function (options){
-          var serviceUrl,
-              folderUrl;
-          //Checks for valid input
-          try {
-            var options = options || {f:'json'};
-            var types = ['json', 'wsdl'];
-            typeof(options) === 'object' && options.f.indexOf(types) ? options : console.log('Please check that you set a valid format object');
-          }
-          catch (err){
-            console.log(err);
-          }
-          var that = this;
-          //Get host
-          var baseUrl = that.getConn();
-          //Set config
-          var config = {
-            params: options,
-            cache: base
-          };
-          //Get the base of ArcGIS server file structure
-          $http.get(baseUrl, config).success(function(data, status){
-            angular.extend(that.conn, data);
-            console.log(status + ": Base Directory");
-            //Checks if folders are empty
-            if (that.conn.folders){
-              //Loops through each folder setting folders and services
-              that.conn.folders.forEach(function(folder){
-                folderUrl = baseUrl + '/' + folder;
-                $http.get(folderUrl, config).success(function(data, status){
-                  //Rebuilds data structures with new data
-                  that.conn.folders[that.conn.folders.indexOf(folder)] = {name: folder, folders: data.folders, services: data.services};
-                  console.log(status + ": Folders/Services");
-                  //Loop through services structure
-                  data.services.forEach(function(data){
-                    serviceUrl = baseUrl + '/' + data.name + '/' + data.type;
-                    angular.extend(config.params, {f: 'pjson'});
-                    $http.get(serviceUrl, config).success(function(data, status){
-                      console.log(data);
-                    });
-                  });
-                });
-              });
-            }
-          });
-          return that.conn;
-        },
+          //Stores layer details
+          layers: [],
         getBase: function(){
         //Get host
           var baseUrl = this.getConn();
@@ -161,23 +81,25 @@
           //Get ArcGIS Server folder details
         },
         //ADD FEATURE, DELETE FEATURE, UPDATE FEATURE, GET FEATURE
+        ///Example Options//////////////////////////////////////////////////
+        // options = {
+        //   folder: 'GEWA',
+        //   layer: 'Streams',
+        //   service: 'gewa_sde',
+        //   server: 'FeatureServer' || 'MapServer' || 'GPServer',
+        //   params: {},
+        //   header: {
+        //     'Content-Type': undefined
+        //   },
+        //   timeout: 5000,
+        //   method: 'GET' || 'POST',
+        //   geojson: true || false,
+        //   actions: 'query'
+        // };
+        ///////////////////////////////////////////////////////////////
         request: function (options){
-          ///Example Options
-          // options = {
-          //   folder: 'GEWA',
-          //   layer: 'Streams',
-          //   service: 'gewa_sde',
-          //   server: 'FeatureServer' || 'MapServer' || 'GPServer',
-          //   params: {},
-          //   header: {
-          //     'Content-Type': undefined
-          //   },
-          //   timeout: 5000,
-          //   method: 'GET' || 'POST',
-          //   geojson: true || false,
-          //   actions: 'query'
-          // };
           //Get host
+          var that = this;
             var baseUrl = this.getConn(),
                 url;
             //Set config
@@ -185,8 +107,29 @@
               params: {f:'json'},
               cache: base
             };
-            url = baseUrl + '/' + folder +
-            $http.get(url)
+            url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+            if(base.get(url)){
+              //Do something
+            }
+            else {
+              //Get the layer and table information from server if it is not already cached
+              $http.get(url, config).then(function(res){
+                base.put(url, true);
+                //Concat layers and tables array
+                var _layers = res.data.layers.concat(res.data.tables);
+                //set layers if layer has not been set
+                _layers.length > 0 && that.layers.length === 0 ?
+                  that.layers = [{
+                    folder: options.folder,
+                    service: [{
+                      name: options.service,
+                      server: options.server,
+                      layers: _layers
+                    }],
+                  }] : that.layers;
+                console.log(that.layers);
+              });
+            }
         }
       };
       //Returns server contructor class

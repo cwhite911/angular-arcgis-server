@@ -7,11 +7,27 @@ angular.module('app', ['agsserver']).
     //Gets connection string
     $scope.serverString = testServer.getConn();
     //Connect Method
-    $scope.myServer = testServer.load();
-    console.log($scope.myServer);
     testServer.getBase().then(function(data){
       $scope.testPromise = data;
     });
+    var options = {
+      folder: 'GEWA',
+      layer: 'Streams',
+      service: 'gewa_sde',
+      server: 'FeatureServer',
+      params: {
+        f: 'json'
+      },
+      header: {
+        'Content-Type': 'application/json'
+      },
+      timeout: 5000,
+      method: 'GET',
+      geojson: true,
+      actions: 'query'
+    };
+    testServer.request(options);
+
 
     //TODO- CREATE server parse
     //Example:
