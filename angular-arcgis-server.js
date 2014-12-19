@@ -28,11 +28,11 @@
 
       //Returns layer id
       var getLayerId = function (_layers, layerName) {
+        var layerId;
         _layers.forEach(function(layer){
-          if (layerName === layer.name){
-            return layer.id;
-          }
-          });
+          layerName === layer.name ? layerId = layer.id : layer;
+        });
+        return layerId
       };
 
 
@@ -134,8 +134,10 @@
               cache: base
             };
             url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+            console.log('Checking for cache ' + base.get(url));
             //Check if url response is already cached
-            if(base.get(url)){
+            if(base.get(url) === true){
+              console.log('using cache ' + base.get(url));
               var layers = getLayers(options);
               layers.forEach(function(layer){
                 if (options.layer === layer.name){
@@ -161,7 +163,8 @@
                 }
               });
             }
-            else {
+            else if (base.get(url) === undefined){
+              console.log('Getting new resourcce');
               //Get the layer and table information from server if it is not already cached
               $http.get(url, config).success(function(res){
                 base.put(url, true);
@@ -179,11 +182,12 @@
                   }] : that.layers;
 
                 //Make Request
-
+                  var layerId = getLayerId(_layers, options.layer);
+                  console.log(layerId);
                     //Request parameters
                     var req = {
                        method: options.method,
-                       url: url + '/' + getLayerId(_layers, options.layer) + '/' + options.actions,
+                       url: url + '/' + layerId + '/' + options.actions,
                        headers: options.headers,
                        params: options.params,
                        timeout: options.timeout
@@ -191,6 +195,7 @@
 
                     return $http(req).then(function(res){
                       if (typeof res.data === 'object') {
+                        console.log(res.data);
                          return res.data;
                       }
                       else {

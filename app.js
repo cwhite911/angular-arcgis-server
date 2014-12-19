@@ -4,12 +4,8 @@ angular.module('app', ['agsserver']).
   controller('test', ['$scope', 'Ags', function($scope, Ags){
     //Create new server object
     var testServer = new Ags({'host': '152.46.17.144'});
-    //Gets connection string
-    // $scope.serverString = testServer.getConn();
-    //Connect Method
-    // testServer.getBase().then(function(data){
-    //   $scope.testPromise = data;
-    // });
+
+    //Set up options
     var options = {
       folder: 'GEWA',
       layer: 'Streams',
@@ -27,15 +23,27 @@ angular.module('app', ['agsserver']).
       geojson: true,
       actions: 'query'
     };
-    console.log(testServer.actions);
+    var options1 = {
+      folder: 'GEWA',
+      layer: 'Boundary',
+      service: 'gewa_sde',
+      server: 'FeatureServer',
+      params: {
+        f: 'json',
+        where: 'OBJECTID > 0'
+      },
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      timeout: 5000,
+      method: 'GET',
+      geojson: true,
+      actions: 'query'
+    };
     console.log(testServer.request(options));
 
-    // var promise = testServer.request(options).then(function(data){
-    //
-    // });
-    // console.log(promise);
-
-    var makePromiseWithSon = function() {
+    console.log(testServer.request(options1));
+    var makePromiseWithSon = function(options) {
 	        // This service's function returns a promise, but we'll deal with that shortly
 	        testServer.request(options)
 	            // then() called when son gets back
@@ -51,7 +59,8 @@ angular.module('app', ['agsserver']).
 	                console.log('rejected');
 	            });
 	    };
-      // makePromiseWithSon();
+      makePromiseWithSon(options);
+      // makePromiseWithSon(options1);
   // testServer.request(options).then(function(data){
   //   console.log(data);
   // });
