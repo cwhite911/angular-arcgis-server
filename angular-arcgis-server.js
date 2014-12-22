@@ -43,8 +43,11 @@
       //Returns ArcGIS Server returned json as geojson
       //Parameters- data is the returned data from ArcGIS server
       var toGeojson = function (data){
-        var geojson,
-            features = data.features;
+        var features = data.features,
+            geojson,
+            point,
+            line,
+            polygon;
 
             geojson = {
               "type": "FeatureCollection",
@@ -61,11 +64,26 @@
           switch (data.geometryType) {
 
             case 'esriGeometryPoint':
+              for (var _i = 0,  _len = features.length; _i < _len; _i++){
+                point = {
+                  "type": "Feature",
+                  "properties": {},
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": []
+                  }
+                };
+                //Update point data
+                point.properties = features[_i].attributes;
+                point.geometry.coordinates = [features[_i].geometry.x, features[_i].geometry.y];
+
+                //Add feature to geojson
+                geojson.features.push(point);
+              }
               break;
 
             case 'esriGeometryPolyline':
               //Geojson line format
-              var line;
 
               //Loop through geometry and attributes and convert
               for (var _i = 0,  _len = features.length; _i < _len; _i++){
