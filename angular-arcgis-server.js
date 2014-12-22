@@ -9,6 +9,7 @@
       var base = $cacheFactory('base');
 
       //PRIVATE FUNCTIONS
+
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Return layers from cache
       var getLayers = function (options){
@@ -39,9 +40,19 @@
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      //Returns ArcGIS Server returned json as geojson
+      //Parameters- data is the returned data from ArcGIS server
+      var toGeojson = function (data){
+        //Check geometry type
+        var geojson = {
+          "type": "FeatureCollection",
+          "features": []
+        }
+      };
 
-      //Constructor Class/////////////////////////////////////////////////////////////////////////////////////
-      //Create connection to ArcGIS REST Services Directory
+      //Constructor Class
+
+      //Create connection to ArcGIS REST Services Directory/////////////////////////////////////////////////
       var Server = function (conn){
         this.conn = {
           protocol: conn.protocol || 'http',
@@ -110,6 +121,8 @@
             cache: base
           };
           var url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+
+
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
               if (typeof res.data === 'object') {
@@ -125,7 +138,11 @@
                     layers: _layers
                   }],
                 }] : that.layers;
+
+                //Gets the layer id for requested layer
                 var layerId = getLayerId(_layers, options.layer);
+
+                //Checks if layerId is a number and returns it else it rejects the promise
                 if(typeof layerId === 'number'){
                   return layerId;
                 }else{
@@ -142,7 +159,6 @@
             })
             .then(function(layerId){
               // Request parameters
-              console.log(layerId);
               var req = {
                 method: options.method,
                 url: url + '/' + layerId + '/' + options.actions,
@@ -164,7 +180,7 @@
                 }
               }, function(res){
                 //Something went wrong
-                console.log('oops i did it again');
+                console.log({error: 'Promise rejected - Check your options and server'});
                 return $q.reject(res.data);
               });
             });

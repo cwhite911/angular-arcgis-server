@@ -18,7 +18,8 @@ angular.module('app', ['agsserver']).
       server: 'FeatureServer',
       params: {
         f: 'json',
-        where: 'OBJECTID > 0'
+        where: 'OBJECTID > 0',
+        outSR: 4326
       },
       headers: {
         'Content-Type': 'text/plain'
