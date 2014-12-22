@@ -16,22 +16,21 @@
     <div class="folders">
       <h2>Root Folders:</h2>
       <ul>
-        <li>
-          <ul>
-            <li>
-              <p>Name:</p>
-            </li>
-          </ul>
+        <li ng-repeat="feature in streams.features">
+
+              <p>{{feature.geometry}}</p>
+              <p>{{feature.attributes}}</p>
+
         </li>
       </ul>
     </div>
     <div class="services">
       <h2>Root Services:</h2>
       <ul>
-        <li>Name:</li>
+        <li>Name: Boundary</li>
+        <li>{{boundary}}</li>
       </ul>
     </div>
-    <pre>{{myServer.actions}}</pre>
   </div>
 
   <div ng-view>
