@@ -43,10 +43,62 @@
       //Returns ArcGIS Server returned json as geojson
       //Parameters- data is the returned data from ArcGIS server
       var toGeojson = function (data){
-        //Check geometry type
-        var geojson = {
-          "type": "FeatureCollection",
-          "features": []
+        var geojson,
+            features = data.features;
+
+            geojson = {
+              "type": "FeatureCollection",
+              "features": []
+            };
+        try {
+          //Check Spatial Reference
+          if (data.spatialReference.wkid !== 4326) {
+            throw {error: 'Please set params outSR to 4326'}
+          }
+
+
+          //Check geometry type
+          switch (data.geometryType) {
+
+            case 'esriGeometryPoint':
+              break;
+
+            case 'esriGeometryPolyline':
+              //Geojson line format
+              var line;
+
+              //Loop through geometry and attributes and convert
+              for (var _i = 0,  _len = features.length; _i < _len; _i++){
+                line = {
+                  "type": "Feature",
+                  "properties": {},
+                  "geometry": {
+                    "type": "LineString",
+                    "coordinates": []
+                  }
+                };
+                //Update line data
+                line.properties = features[_i].attributes;
+                line.geometry.coordinates = features[_i].geometry.paths[0];
+
+                //Add feature to geojson
+                geojson.features.push(line);
+              }
+              break;
+
+            case 'esriGeometryPolygon':
+              break;
+            default:
+              throw 'Case Not Found';
+
+          }
+
+        }
+        catch(err){
+          console.log(err);
+        }
+        finally {
+          return geojson;
         }
       };
 
@@ -171,6 +223,9 @@
               .then(function(res){
                 if (typeof res.data === 'object') {
                   console.log(res.data);
+                  if (options.geojson === true){
+                    return toGeojson(res.data);
+                  }
                   return res.data;
                 }
                 else {

@@ -19,7 +19,7 @@ angular.module('app', ['agsserver']).
       params: {
         f: 'json',
         where: 'OBJECTID > 0',
-        outSR: 4326
+        // outSR: 4326
       },
       headers: {
         'Content-Type': 'text/plain'
@@ -45,7 +45,7 @@ angular.module('app', ['agsserver']).
       },
       timeout: 5000,
       method: 'GET',
-      geojson: true,
+      geojson: false,
       actions: 'query'
     };
 
