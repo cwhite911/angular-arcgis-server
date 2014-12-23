@@ -1,14 +1,14 @@
 var gulp = require('gulp'),
     karma = require('gulp-karma'),
     nodemon = require('gulp-nodemon'),
-    jshint= require('gulp-jshint');
+    jshint = require('gulp-jshint');
 
 
   var testFiles = [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
-      './angular-arcgis-server.js',
-      './app.js',
+      'angular-arcgis-server.js',
+      'app.js',
       'tests/*.js'
   ];
 
@@ -28,10 +28,11 @@ var gulp = require('gulp'),
     gulp.task('lint', function () {
       gulp.src('angular-arcgis-server.js')
       .pipe(jshint())
-    })
+      .pipe(jshint.reporter('default'))
+    });
 
     gulp.task('serve', function () {
-      nodemon({ script: 'server.js', ext: 'html js', ignore: ['ignored.js'] })
+      nodemon({ script: 'server.js', ext: 'html js'})
       .on('change', ['lint'])
       .on('restart', function () {
         console.log('restarted!');

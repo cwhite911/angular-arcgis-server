@@ -30,4 +30,20 @@ describe('Service: geojsonTools', function() {
     expect(toGeojson).toEqual(geojson);
   });
 
+  it('throws error when geometryType is not set', function(){
+    var geojson = {
+      "type": "FeatureCollection",
+      "features": []
+    };
+
+    var data = {
+      spatialReference: {
+        wkid: 4326
+      }
+    };
+
+    var toGeojson = geojsonTools.toGeojson(data);
+    expect(toGeojson).toEqual(geojson);
+  });
+
 });
