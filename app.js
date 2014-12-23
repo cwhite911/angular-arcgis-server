@@ -7,9 +7,6 @@ angular.module('app', ['agsserver']).
     console.log(testServer);
 
 
-
-
-
     //Set up options
     var streamsOptions = {
       folder: 'GEWA',
@@ -38,14 +35,15 @@ angular.module('app', ['agsserver']).
       params: {
         f: 'json',
         where: 'OBJECTID > 0',
-        returnGeometry: false
+        returnGeometry: true,
+        outSR: 4326
       },
       headers: {
         'Content-Type': 'text/plain'
       },
       timeout: 5000,
       method: 'GET',
-      geojson: false,
+      geojson: true,
       actions: 'query'
     };
 
@@ -89,5 +87,11 @@ angular.module('app', ['agsserver']).
       $scope.gamefish = data;
     });
 
+    // testServer.request('String')
+    // .then(function(data){
+    //   console.log('Point Data');
+    //   console.log(data);
+    //   $scope.gamefish = data;
+    // });
 
   }]);

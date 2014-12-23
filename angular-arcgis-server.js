@@ -1,11 +1,108 @@
 (function(window, document, undefined){
   'use strict';
-  var app = angular.module('agsserver', [
-    'ngCookies',
-    'ngResource'
-  ]);
-  app.factory('Ags', ['$cacheFactory', '$http', '$q',
-    function($cacheFactory, $http, $q){
+  var app = angular.module('agsserver', []);
+
+
+//Provides tool to convert esri json to geojson
+  app.service('geojsonTools', function(){
+    return {
+      //Function to created geojson features
+      geoJsonFeature: function (data, type){
+        //Basic geojson feature structure
+        var feature = {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": type,
+            "coordinates": []
+          }
+        };
+        switch (type){
+          case 'Point':
+            //Update point data
+            feature.geometry.coordinates = [data.geometry.x, data.geometry.y];
+            break;
+
+          case 'LineString':
+            //Update line data
+            feature.geometry.coordinates = data.geometry.paths[0];
+            break;
+
+          case 'Polygon':
+            //Update Polygon data
+            feature.geometry.coordinates = data.geometry.rings;
+            break;
+
+          default:
+            console.log({error: 'Improper geometry type'});
+            return;
+        }
+              //Add attribute data to feature
+        feature.properties = data.attributes;
+        return feature;
+      },
+
+      //Returns ArcGIS Server returned json as geojson
+      //Parameters- data is the returned data from ArcGIS server
+      toGeojson: function (data){
+        var features = data.features, feature, geojson, point, line, polygon;
+
+        //Geojson shell format
+        geojson = {
+          "type": "FeatureCollection",
+          "features": []
+        };
+
+        try {
+          //Check Spatial Reference
+          if (data.spatialReference.wkid !== 4326) {
+            throw {error: 'Please set params outSR to 4326'};
+          }
+          //Loop through each feature from esri response
+          for (var _i = 0,  _len = features.length; _i < _len; _i++){
+            feature = features[_i];
+            //Check geometry type
+            switch (data.geometryType) {
+
+              case 'esriGeometryPoint':
+                //Add feature to geojson
+                geojson.features.push(this.geoJsonFeature(feature, 'Point'));
+                break;
+
+              case 'esriGeometryPolyline':
+                //Add feature to geojson
+                geojson.features.push(this.geoJsonFeature(feature, 'LineString'));
+                break;
+
+              case 'esriGeometryPolygon':
+                //Add feature to geojson
+                geojson.features.push(this.geoJsonFeature(feature, 'Polygon'));
+                break;
+
+              default:
+                throw {error: 'esri geometry not recognized, failed geojson conversion'};
+
+              }
+            }
+
+          }
+          catch(err){
+            console.log(err);
+          }
+          finally {
+            return geojson;
+          }
+        }
+
+
+    };
+
+  });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  app.factory('Ags', ['$cacheFactory', '$http', '$q', 'geojsonTools',
+    function($cacheFactory, $http, $q, geojsonTools){
       var base = $cacheFactory('base');
 
       //PRIVATE FUNCTIONS
@@ -39,94 +136,6 @@
       };
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      //Function to created geojson features
-      var geoJsonFeature = function (data, type){
-        //Basic geojson feature structure
-        var feature = {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": type,
-            "coordinates": []
-          }
-        };
-          switch (type){
-            case 'Point':
-              //Update point data
-              feature.geometry.coordinates = [data.geometry.x, data.geometry.y];
-              break;
-
-            case 'LineString':
-              //Update line data
-              feature.geometry.coordinates = data.geometry.paths[0];
-              break;
-
-            case 'Polygon':
-              //Update Polygon data
-              feature.geometry.coordinates = data.geometry.rings;
-              break;
-
-            default:
-              console.log({error: 'Improper geometry type'});
-              return;
-          }
-          //Add attribute data to feature
-          feature.properties = data.attributes;
-          return feature;
-      };
-
-      //Returns ArcGIS Server returned json as geojson
-      //Parameters- data is the returned data from ArcGIS server
-      var toGeojson = function (data){
-        var features = data.features, feature, geojson, point, line, polygon;
-
-            //Geojson shell format
-            geojson = {
-              "type": "FeatureCollection",
-              "features": []
-            };
-
-        try {
-          //Check Spatial Reference
-          if (data.spatialReference.wkid !== 4326) {
-            throw {error: 'Please set params outSR to 4326'};
-          }
-
-          for (var _i = 0,  _len = features.length; _i < _len; _i++){
-            feature = features[_i];
-          //Check geometry type
-            switch (data.geometryType) {
-
-              case 'esriGeometryPoint':
-                //Add feature to geojson
-                geojson.features.push(geoJsonFeature(feature, 'Point'));
-                break;
-
-              case 'esriGeometryPolyline':
-                //Add feature to geojson
-                geojson.features.push(geoJsonFeature(feature, 'LineString'));
-                break;
-
-              case 'esriGeometryPolygon':
-                //Add feature to geojson
-                geojson.features.push(geoJsonFeature(feature, 'Polygon'));
-                break;
-
-              default:
-                throw {error: 'esri geometry not recognized, failed geojson conversion'};
-
-            }
-          }
-
-        }
-        catch(err){
-          console.log(err);
-        }
-        finally {
-          return geojson;
-        }
-      };
 
       //Constructor Class
 
@@ -190,6 +199,13 @@
 
         //Method that gets data about the server
         request: function(options){
+          //Check that option are set as an object
+          try {
+            if (typeof options !== 'object') throw {error: 'Options is not an object!'};
+          }
+          catch (err){
+            console.log(err);
+          }
           var that = this;
         //Get host
           var baseUrl = this.getConn();
@@ -250,7 +266,7 @@
                 if (typeof res.data === 'object') {
                   console.log(res.data);
                   if (options.geojson === true){
-                    return toGeojson(res.data);
+                    return geojsonTools.toGeojson(res.data);
                   }
                   return res.data;
                 }
