@@ -70,21 +70,21 @@ angular.module('app', ['agsserver']).
 
     testServer.request(streamsOptions)
       .then(function(data){
-      console.log('Getting the base');
+      console.log('Polyline Data');
       console.log(data);
       $scope.streams = data;
     });
 
     testServer.request(boundaryOptions)
     .then(function(data){
-      console.log('Getting the base');
+      console.log('Polygon Data');
       console.log(data);
       $scope.boundary = data;
     });
 
     testServer.request(gamefishOptions)
     .then(function(data){
-      console.log('Getting the base');
+      console.log('Point Data');
       console.log(data);
       $scope.gamefish = data;
     });
