@@ -48,7 +48,7 @@ Define options
 
 ```
 
-Example options settings
+Make request to server
 
 ```javascript
 
