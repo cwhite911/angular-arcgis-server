@@ -2,7 +2,6 @@
   'use strict';
   var app = angular.module('agsserver', []);
 
-
 //Provides tool to convert esri json to geojson
   app.service('geojsonTools', function(){
     return {
@@ -93,8 +92,6 @@
             return geojson;
           }
         }
-
-
     };
 
   });
@@ -103,8 +100,10 @@
 
   app.factory('Ags', ['$cacheFactory', '$http', '$q', 'geojsonTools',
     function($cacheFactory, $http, $q, geojsonTools){
-      var base = $cacheFactory('base');
 
+      //Create cache factory
+      var base = $cacheFactory('base');
+      console.log(base);
       //PRIVATE FUNCTIONS
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
