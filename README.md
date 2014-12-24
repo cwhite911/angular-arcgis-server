@@ -5,7 +5,7 @@ Utility for ArcGIS Server 10.22
 
 ## Purpose
 
-Angular-arcgis-server module is designed to provide an easier way to interact with ArcGIS server by using descriptive layer names to make requests to the server. This provides a more robust foundation for an application when a services layerids are subject to change from changes on the server. The module also provides easy conversion from ESRI JSON to GeoJSON.
+Angular-arcgis-server module is designed to provide an easier way to interact with ArcGIS server by using descriptive layer names to make requests to the server. This provides a more robust foundation for an application when a services layer ids are subject to change from changes on the server. The module also provides easy conversion from ESRI JSON to GeoJSON.
 
 
 ## Usage
