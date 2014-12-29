@@ -9,16 +9,18 @@ Angular-arcgis-server module is designed to provide an easier way to interact wi
 
 ## API
 
-Method Request
+Method to make request to server
+
+request(options)
 
 Options
 
 | Parameter  | Details | Type | Required | Default |
-| ------------- | ------------- | :-----------: | ----------- | -------------- |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
 | folder  | name of folder  | String | true | null |
 | layer   | name of layer   | String | true | null |
 | service | name of service | String | true | null |
-| server  | type of server ['FeatureServer', 'MapServer', 'GPServer'] | String | true | 'FeatureServer' |
+| server  | type of server <ul><li>'FeatureServer'</li><li>'MapServer'</li><li>'GPServer'</li></ul> | String | true | 'FeatureServer' |
 | actions | The type of request sent to the server <ul><li>'query'</li><li>'applyEdits'</li><li>'addFeatures'</li><li>'updateFeatures'</li><li>'deleteFeatures'</li><li>'generateRenderer'</li></ul> | String | true | 'query' |
 | params  | Parameters matching setting defined in [ArcGIS Server 10.22 REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/The_ArcGIS_REST_API/02r300000054000000/)| Object | true | null |
 | geojson | Controls whether or not to return response as geojson | Boolean | false | false |
