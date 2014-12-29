@@ -130,7 +130,7 @@
         _layers.forEach(function(layer){
           layerName === layer.name ? layerId = layer.id : layer;
         });
-        return layerId || 'Layer Not Found'
+        return layerId;
       };
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,11 +195,30 @@
           //Stores layer details
         layers: [],
 
+        //Sets actions options for request
+        setRequst: function (url, layerId, options){
+          var req;
+          // Request parameters
+          this.actions.forEach(function(action){
+            if (action.type === options.actions){
+              req = {
+                method: action.method,
+                url: url + '/' + layerId + '/' + action.type,
+                headers: options.headers || {'Content-Type': 'text/plain'},
+                params: options.params || {},
+                timeout: options.timeout || 5000
+              };
+            }
+          });
+          return req;
+        },
+
         //Method that gets data about the server
         request: function(options){
           //Check that option are set as an object
           try {
             if (typeof options !== 'object') throw {error: 'Options is not an object!'};
+            if (options === {}) throw {error: 'Options are empty'};
           }
           catch (err){
             console.log(err);
@@ -213,7 +232,7 @@
             cache: base
           };
           var url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-          
+
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
               if (typeof res.data === 'object') {
@@ -232,7 +251,6 @@
 
                 //Gets the layer id for requested layer
                 var layerId = getLayerId(_layers, options.layer);
-
                 //Checks if layerId is a number and returns it else it rejects the promise
                 if(typeof layerId === 'number'){
                   return layerId;
@@ -250,13 +268,14 @@
             })
             .then(function(layerId){
               // Request parameters
-              var req = {
-                method: options.method,
-                url: url + '/' + layerId + '/' + options.actions,
-                headers: options.headers,
-                params: options.params,
-                timeout: options.timeout
-              };
+            var req = that.setRequst(url, layerId, options);
+              // var req = {
+              //   method: options.method,
+              //   url: url + '/' + layerId + '/' + options.actions,
+              //   headers: options.headers,
+              //   params: options.params,
+              //   timeout: options.timeout
+              // };
               //Make request to server and return promise
               return $http(req)
               .then(function(res){

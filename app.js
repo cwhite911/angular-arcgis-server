@@ -3,7 +3,7 @@
 angular.module('app', ['agsserver']).
   controller('test', ['$scope', '$http', 'Ags', function($scope, $http, Ags){
     //Create new server object
-    var testServer = new Ags({'host': '152.46.17.144'});
+    var testServer = new Ags({host: '152.46.17.144'});
     console.log(testServer);
 
 
@@ -22,7 +22,6 @@ angular.module('app', ['agsserver']).
         'Content-Type': 'text/plain'
       },
       timeout: 5000,
-      method: 'GET',
       geojson: true,
       actions: 'query'
     };
@@ -38,32 +37,30 @@ angular.module('app', ['agsserver']).
         returnGeometry: true,
         outSR: 4326
       },
-      headers: {
-        'Content-Type': 'text/plain'
-      },
-      timeout: 5000,
-      method: 'GET',
       geojson: true,
       actions: 'query'
     };
 
     var gamefishOptions = {
       folder: 'GEWA',
-      layer: 'Gamefish',
+      layer: 'Sample Locations',
       service: 'gewa_sde',
       server: 'FeatureServer',
       params: {
         f: 'json',
-        where: 'OBJECTID > 0',
-        outSR: 4326
+        features: [
+          {
+            "geometry": {"x": -76.9346809387207 , "y": 38.1779196445415 },
+            "attributes": {"siteid": "TEST"}
+          }
+        ]
       },
       headers: {
         'Content-Type': 'text/plain'
       },
       timeout: 5000,
-      method: 'GET',
-      geojson: true,
-      actions: 'query'
+      geojson: false,
+      actions: 'addFeatures'
     };
 
     testServer.request(streamsOptions)
