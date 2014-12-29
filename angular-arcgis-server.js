@@ -188,7 +188,7 @@
           },
           {
             type: 'generateRenderer',
-            method: 'GET' || 'POST'
+            method: 'GET'
           }],
 
 
@@ -208,15 +208,48 @@
                 params: options.params || {},
                 timeout: options.timeout || 5000
               };
+              if (action.method === 'POST'){
+
+                req.params.features = angular.toJson(req.params.features);
+                // delete req.params;
+                // req.data = options.params;
+              }
             }
           });
           return req;
         },
 
         //Use server utilities
-        utilsGeom: function () {
+        utilsGeom: function (type, options) {
+          //Check that option are set as an object
+          try {
+            if (typeof options !== 'object') throw {error: 'Options is not an object!'};
+            if (options === {}) throw {error: 'Options are empty'};
+          }
+          catch (err){
+            console.log(err);
+          }
           var that = this,
-              baseUrl = that.getConn();
+              baseUrl = that.getConn(),
+              url,
+              config;
+
+
+          //Set url
+          url = baseUrl + '/Utilities/Geometry/GeometryServer/' + type;
+
+          //Configuration
+          config = {
+            params: options
+          }
+          return $http.get(url, config).then(function(res){
+            console.log(res.data);
+            return res.data;
+          }, function(res){
+            return $q.reject(res.data);
+          })
+
+
 
         },
 
