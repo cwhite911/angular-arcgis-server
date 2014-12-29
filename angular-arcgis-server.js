@@ -103,7 +103,6 @@
 
       //Create cache factory
       var base = $cacheFactory('base');
-      console.log(base);
       //PRIVATE FUNCTIONS
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,8 +213,7 @@
             cache: base
           };
           var url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-
-
+          
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
               if (typeof res.data === 'object') {
