@@ -101,6 +101,7 @@ testServer.request(options)
 #### utilsGeom(type, options)
 
 ##### Makes request to ArcGIS server geometry utilities, takes a single options object as parameter.
+
 | Types | Options (object) |
 | ----- | ------- |
 | Areas and Lengths | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Areas_and_Lengths/02r3000000t4000000/) |
@@ -122,3 +123,29 @@ testServer.request(options)
 | Simplify  | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Simplify/02r3000000pn000000/) |
 | Trim Extend | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Trim_Extend/02r30000010z000000/) |
 | Union | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Union/02r3000000zq000000/) |
+
+#### Example
+
+Project data from SRID 4326 to SRID 102100
+
+```javascript
+
+//Set options
+var projectOptions = {
+  f: 'json',
+  geometries: {
+    geometryType: 'esriGeometryPoint',
+    geometries: [ {"x": -76.9346809387207 , "y": 38.1779196445415 }]
+  },
+  inSR: 4326,
+  outSR: 102100
+};
+
+//Make request
+testServer.utilsGeom('project', projectOptions)
+.then(function(data){
+  //Do something
+});
+
+
+```
