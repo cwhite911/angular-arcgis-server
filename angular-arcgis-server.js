@@ -213,6 +213,13 @@
           return req;
         },
 
+        //Use server utilities
+        utilsGeom: function () {
+          var that = this,
+              baseUrl = that.getConn();
+
+        },
+
         //Method that gets data about the server
         request: function(options){
           //Check that option are set as an object
@@ -223,15 +230,16 @@
           catch (err){
             console.log(err);
           }
-          var that = this;
-        //Get host
-          var baseUrl = this.getConn();
-          //Set config
-          var config = {
-            params: {f:'json'},
-            cache: base
-          };
-          var url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+          var that = this,
+              //Get host
+              baseUrl = that.getConn(),
+              //Set config
+              config = {
+                params: {f:'json'},
+                cache: base
+              },
+              //Set url
+              url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
@@ -269,13 +277,7 @@
             .then(function(layerId){
               // Request parameters
             var req = that.setRequst(url, layerId, options);
-              // var req = {
-              //   method: options.method,
-              //   url: url + '/' + layerId + '/' + options.actions,
-              //   headers: options.headers,
-              //   params: options.params,
-              //   timeout: options.timeout
-              // };
+
               //Make request to server and return promise
               return $http(req)
               .then(function(res){
@@ -310,7 +312,6 @@
         //     'Content-Type': undefined
         //   },
         //   timeout: 5000,
-        //   method: 'GET' || 'POST',
         //   geojson: true || false,
         //   actions: 'query'
         // };
