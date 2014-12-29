@@ -28,8 +28,8 @@ Options (object)
 
 | Parameter  | Details | Type | Required | Default |
 | :------------- | ------------- | :-----------: | :-----------: | -------------- |
-| protocol  | Protocol to be used  | *String* | false | 'http' |
 | host   | Host where server is located | *String* | true | null |
+| protocol  | Protocol to be used  | *String* | false | 'http' |
 | path | Path to server | *String* | false | '/arcgis/rest/services' |
 
 #### Example
