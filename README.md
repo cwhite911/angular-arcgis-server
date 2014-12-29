@@ -38,18 +38,13 @@ Define options
       layer: <layer>,
       service: <service>,
       server: 'FeatureServer',
+      geojson: true,
+      actions: 'query'
       params: {
         f: 'json',
         where: 'OBJECTID > 0'
-        },
-        headers: {
-          'Content-Type': 'text/plain'
-          },
-          timeout: 5000,
-          method: 'GET',
-          geojson: true,
-          actions: 'query'
-        };
+      }
+    };
 
 ```
 
