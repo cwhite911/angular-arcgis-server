@@ -29,7 +29,7 @@ Options
 
 ### Method to use ArcGIS server geometry utilities
 
-#### utilsGeom(type, option)
+#### utilsGeom(type, options)
 
 | Types | Options |
 | ----- | ------- |
