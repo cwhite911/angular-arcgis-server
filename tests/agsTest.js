@@ -12,38 +12,27 @@ describe('Factory: Ags', function() {
 
   }));
 
-  it('throws error when incorrect wkid is set', function(){
-    // data.spatialReference.wkid !== 4326) {
-    //   throw {error: 'Please set params outSR to 4326'};
-    // }
-    var geojson = {
-      "type": "FeatureCollection",
-      "features": []
-    };
-
-    var data = {
-      spatialReference: {
-        wkid: 102100
-      }
-    };
-    var toGeojson = geojsonTools.toGeojson(data);
-    expect(toGeojson).toEqual(geojson);
+  it('Returns an object when server is created', function(){
+    var testServer = new Ags({host: '152.46.17.144'});
+    expect(typeof testServer).toBe('object');
   });
 
-  it('throws error when geometryType is not set', function(){
-    var geojson = {
-      "type": "FeatureCollection",
-      "features": []
-    };
+  it('Sets server host', function(){
+    var testServer = new Ags({host: '152.46.17.144'});
+    expect(testServer.conn.host).toBe('152.46.17.144');
+  });
 
-    var data = {
-      spatialReference: {
-        wkid: 4326
-      }
-    };
+  it('Tests if defaults are set', function(){
+    var testServer = new Ags({});
 
-    var toGeojson = geojsonTools.toGeojson(data);
-    expect(toGeojson).toEqual(geojson);
+    var defaults = {
+      protocol: 'http',
+      host: '',
+      path: '/arcgis/rest/services'
+    };
+    expect(testServer.conn.protocol).toBe(defaults.protocol);
+    expect(testServer.conn.path).toBe(defaults.path);
+    expect(testServer.conn.host).toBe(defaults.host);
   });
 
 });
