@@ -7,13 +7,50 @@ Utility for ArcGIS Server 10.22
 
 Angular-arcgis-server module is designed to provide an easier way to interact with ArcGIS server by using descriptive layer names to make requests to the server. This provides a more robust foundation for an application when a services layer ids are subject to change from changes on the server. The module also provides easy conversion from ESRI JSON to GeoJSON.
 
+## Usage
+
+Inject module and add factory to controller
+
+```javascript
+
+angular.module('app', ['agsserver']).
+controller('test', [ 'Ags', function(Ags){}]);
+
+```
+
 ## API
 
-### Method to make request to server
+### Create server
+
+#### Ags(options)
+
+Options (object)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| protocol  | Protocol to be used  | *String* | false | 'http' |
+| host   | Host where server is located | *String* | true | null |
+| path | Path to server | *String* | false | '/arcgis/rest/services' |
+
+#### Example
+
+Create ArcGIS server object
+
+```javascript
+
+//Create new server object
+var testServer = new Ags({'host': <Your Host> });
+
+```
+
+
+### Methods
 
 #### request(options)
 
-Options
+##### Makes request to server and takes a single options object as a parameter.
+
+Options (object)
 
 | Parameter  | Details | Type | Required | Default |
 | :------------- | ------------- | :-----------: | :-----------: | -------------- |
@@ -27,11 +64,44 @@ Options
 | timeout | Set timeout | *Number* | false | 5000 |
 | header  | Set request header | *Object* | false | {'Content-Type': 'text/plain'} |
 
-### Method to use ArcGIS server geometry utilities
+#### Example
+
+Define options
+
+```javascript
+
+//Setup options
+var options = {
+  folder: <folder>,
+  layer: <layer>,
+  service: <service>,
+  server: 'FeatureServer',
+  geojson: true,
+  actions: 'query'
+  params: {
+    f: 'json',
+    where: 'OBJECTID > 0'
+  }
+};
+
+```
+
+Make request to server
+
+```javascript
+
+//Make request to Server
+testServer.request(options)
+.then(function(data){
+  //Do something
+});
+
+```
 
 #### utilsGeom(type, options)
 
-| Types | Options |
+##### Makes request to ArcGIS server geometry utilities, takes a single options object as parameter.
+| Types | Options (object) |
 | ----- | ------- |
 | Areas and Lengths | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Areas_and_Lengths/02r3000000t4000000/) |
 | Auto Complete | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Auto_Complete/02r3000000s0000000/) |
@@ -52,55 +122,3 @@ Options
 | Simplify  | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Simplify/02r3000000pn000000/) |
 | Trim Extend | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Trim_Extend/02r30000010z000000/) |
 | Union | [Source Info](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Union/02r3000000zq000000/) |
-
-## Usage
-
-Inject module and add factory to controller
-
-```javascript
-
-  angular.module('app', ['agsserver']).
-    controller('test', [ 'Ags', function(Ags){}]);
-
-```
-
-Create ArcGIS server object
-
-```javascript
-
-  //Create new server object
-  var testServer = new Ags({'host': <Your Host> });
-
-```
-
-Define options
-
-```javascript
-
-  //Setup options
-    var options = {
-      folder: <folder>,
-      layer: <layer>,
-      service: <service>,
-      server: 'FeatureServer',
-      geojson: true,
-      actions: 'query'
-      params: {
-        f: 'json',
-        where: 'OBJECTID > 0'
-      }
-    };
-
-```
-
-Make request to server
-
-```javascript
-
-  //Make request to Server
-  testServer.request(options)
-    .then(function(data){
-      //Do something
-  });
-
-```

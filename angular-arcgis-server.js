@@ -247,7 +247,7 @@
             return res.data;
           }, function(res){
             return $q.reject(res.data);
-          })
+          });
 
 
 
