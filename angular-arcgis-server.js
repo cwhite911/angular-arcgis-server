@@ -234,7 +234,6 @@
               url,
               config;
 
-
           //Set url
           url = baseUrl + '/Utilities/Geometry/GeometryServer/' + type;
 
@@ -248,9 +247,6 @@
           }, function(res){
             return $q.reject(res.data);
           });
-
-
-
         },
 
         //Method that gets data about the server
@@ -333,22 +329,7 @@
               });
             });
         }
-        //ADD FEATURE, DELETE FEATURE, UPDATE FEATURE, GET FEATURE
-        ///Example Options//////////////////////////////////////////////////
-        // options = {
-        //   folder: 'GEWA',
-        //   layer: 'Streams',
-        //   service: 'gewa_sde',
-        //   server: 'FeatureServer' || 'MapServer' || 'GPServer',
-        //   params: {},
-        //   header: {
-        //     'Content-Type': undefined
-        //   },
-        //   timeout: 5000,
-        //   geojson: true || false,
-        //   actions: 'query'
-        // };
-        ///////////////////////////////////////////////////////////////
+
       };
       //Returns server contructor class
       return (Server);
