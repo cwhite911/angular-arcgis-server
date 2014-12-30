@@ -77,24 +77,29 @@ angular.module('app', ['agsserver']).
     testServer.utilsGeom('project', projectOptions)
       .then(function(data){
 
-        var gamefishOptions = {
+        var sampleLocationsOptions = {
           folder: 'GEWA',
           layer: 'Sample Locations',
           service: 'gewa_sde',
           server: 'FeatureServer',
           params: {
             f: 'json',
+            gdbVersion: 'SDE.DEFAULT',
             features: [
               {
-                "geometry": data.geometries[0],
-                "attributes": {"siteid": "TEST"}
+                "geometry": data.geometries[0]
               }
             ]
         },
-        actions: 'addFeatures'
+        actions: 'addFeatures',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       };
 
-        testServer.request(gamefishOptions)
+
+
+        testServer.request(sampleLocationsOptions)
         .then(function(data){
           console.log('Point Data');
           console.log(data);

@@ -209,16 +209,18 @@
                 timeout: options.timeout || 5000
               };
               if (action.method === 'POST'){
-
-                req.params.features = angular.toJson(req.params.features);
-                // delete req.params;
-                // req.data = options.params;
+                req.params.features = JSON.stringify(req.params.features)
+                base.put('lastOID', )
               }
             }
           });
           return req;
         },
 
+        //Delete last feature added
+        deleteLastFeature: function () {
+
+        },
         //Use server utilities
         utilsGeom: function (type, options) {
           //Check that option are set as an object
@@ -311,7 +313,6 @@
               return $http(req)
               .then(function(res){
                 if (typeof res.data === 'object') {
-                  console.log(res.data);
                   if (options.geojson === true){
                     return geojsonTools.toGeojson(res.data);
                   }
