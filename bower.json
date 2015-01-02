@@ -1,6 +1,6 @@
 {
   "name": "angular-arcgis-server",
-  "main": "angular-arcgis-server.js",
+  "main": "dist/angular-arcgis-server.js",
   "version": "0.1.0",
   "homepage": "https://github.com/cwhite911/angular-arcgis-server",
   "authors": [
