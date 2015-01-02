@@ -7,6 +7,19 @@ Utility for ArcGIS Server 10.22
 
 Angular-arcgis-server module is designed to provide an easier way to interact with ArcGIS server by using descriptive layer names to make requests to the server. This provides a more robust foundation for an application when a services layer ids are subject to change from changes on the server. The module also provides easy conversion from ESRI JSON to GeoJSON.
 
+## Install
+
+```
+  bower install angular-arcgis-server -S
+
+```
+
+```html
+
+  <script src="/bower_components/angular-arcgis-server/dist/angular-arcgis-server.js"></script>
+
+```
+
 ## Usage
 
 Inject module and add factory to controller
