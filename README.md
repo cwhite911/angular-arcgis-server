@@ -9,14 +9,18 @@ Angular-arcgis-server module is designed to provide an easier way to interact wi
 
 ## Install
 
+Add via [bower](http://bower.io/)
+
 ```
   bower install angular-arcgis-server -S
 
 ```
 
+Add script to html
+
 ```html
 
-  <script src="/bower_components/angular-arcgis-server/dist/angular-arcgis-server.js"></script>
+  <script src="bower_components/angular-arcgis-server/dist/angular-arcgis-server.js"></script>
 
 ```
 
