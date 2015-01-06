@@ -25,6 +25,7 @@ angular.module('app', ['agsserver']).
       geojson: true,
       actions: 'query'
     };
+    
     //Set intentional error for testing layer: Boudary1 does not exisit
     var boundaryOptions = {
       folder: 'GEWA',
@@ -57,13 +58,6 @@ angular.module('app', ['agsserver']).
     });
 
 
-
-    // testServer.request('String')
-    // .then(function(data){
-    //   console.log('Point Data');
-    //   console.log(data);
-    //   $scope.gamefish = data;
-    // });
     var projectOptions = {
       f: 'json',
       geometries: {

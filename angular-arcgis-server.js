@@ -44,7 +44,7 @@
       //Returns ArcGIS Server returned json as geojson
       //Parameters- data is the returned data from ArcGIS server
       toGeojson: function (data){
-        var features = data.features, feature, geojson, point, line, polygon;
+        var features = data.features, feature, geojson;
 
         //Geojson shell format
         geojson = {
@@ -105,23 +105,7 @@
       var base = $cacheFactory('base');
       //PRIVATE FUNCTIONS
 
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      //Return layers from cache
-      var getLayers = function (options){
-        //Find correct layer id
-        for (var _i = o, _len = that.layers.length; _i < _len; _i++ ){
-          //Check for matching folder
-          if(that.layers[_i].folder === options.folder){
-            var _service = that.layers[_i].service;
-            //Loop through services
-            _service.forEach(function(_info){
-              if(_service[_info].name === options.service && _service[_info].server === options.server){
-                return _service[_info].layers;
-              }
-            });
-          }
-        }
-      };
+
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////
       //Returns layer id
@@ -209,8 +193,8 @@
                 timeout: options.timeout || 5000
               };
               if (action.method === 'POST'){
-                req.params.features = JSON.stringify(req.params.features)
-                base.put('lastOID', )
+                req.params.features = JSON.stringify(req.params.features);
+                // base.put('lastOID', )
               }
             }
           });
@@ -225,8 +209,12 @@
         utilsGeom: function (type, options) {
           //Check that option are set as an object
           try {
-            if (typeof options !== 'object') throw {error: 'Options is not an object!'};
-            if (options === {}) throw {error: 'Options are empty'};
+            if (typeof options !== 'object'){
+              throw {error: 'Options is not an object!'};
+            }
+            if (options === {}){
+              throw {error: 'Options are empty'};
+            }
           }
           catch (err){
             console.log(err);
@@ -242,7 +230,7 @@
           //Configuration
           config = {
             params: options
-          }
+          };
           return $http.get(url, config).then(function(res){
             console.log(res.data);
             return res.data;
@@ -255,8 +243,12 @@
         request: function(options){
           //Check that option are set as an object
           try {
-            if (typeof options !== 'object') throw {error: 'Options is not an object!'};
-            if (options === {}) throw {error: 'Options are empty'};
+            if (typeof options !== 'object') {
+              throw {error: 'Options is not an object!'};
+            }
+            if (options === {}){
+               throw {error: 'Options are empty'};
+            }
           }
           catch (err){
             console.log(err);
