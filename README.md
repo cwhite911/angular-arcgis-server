@@ -63,18 +63,60 @@ var testServer = new Ags({'host': <Your Host> });
 
 ### Methods
 
-#### request(options)
+#### setService(options)
 
-##### Makes request to server and takes a single options object as a parameter.
+##### Sets a service that can be reused to make sperate requests to the same service
 
 Options (object)
 
 | Parameter  | Details | Type | Required | Default |
 | :------------- | ------------- | :-----------: | :-----------: | -------------- |
 | folder  | Name of folder  | *String* | true | null |
-| layer   | Name of layer   | *String* | true | null |
 | service | Name of service | *String* | true | null |
 | server  | Type of server <ul><li>'FeatureServer'</li><li>'MapServer'</li><li>'GPServer'</li></ul> | *String* | true | 'FeatureServer' |
+
+#### Example
+
+Define options
+
+```javascript
+
+//Setup options
+var options = {
+  folder: <folder>,
+  service: <service>,
+  server: 'FeatureServer',
+};
+
+```
+
+Make request to server
+
+```javascript
+
+//Make request to Server
+var myFeatureService = testServer.setService(options);
+
+```
+
+#### request(service, options)
+
+##### Makes request to server and takes a single options object as a parameter.
+
+Parameters
+
+Service (string)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| service   | Service to make request   | *String* | true | null |
+
+
+Options (object)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| layer   | Name of layer   | *String* | true | null |
 | actions | The type of request sent to the server <ul><li>'query'</li><li>'applyEdits'</li><li>'addFeatures'</li><li>'updateFeatures'</li><li>'deleteFeatures'</li><li>'generateRenderer'</li></ul> | *String* | true | 'query' |
 | params  | Parameters matching setting defined in [ArcGIS Server 10.22 REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/The_ArcGIS_REST_API/02r300000054000000/)| Object | true | null |
 | geojson | Controls whether or not to return response as geojson | *Boolean* | false | false |
@@ -89,10 +131,7 @@ Define options
 
 //Setup options
 var options = {
-  folder: <folder>,
   layer: <layer>,
-  service: <service>,
-  server: 'FeatureServer',
   geojson: true,
   actions: 'query'
   params: {
@@ -108,7 +147,7 @@ Make request to server
 ```javascript
 
 //Make request to Server
-testServer.request(options)
+testServer.request(<service>, options)
 .then(function(data){
   //Do something
 });

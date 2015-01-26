@@ -175,7 +175,22 @@
             method: 'GET'
           }],
 
-
+        setService: function (options) {
+          try {
+            if (typeof options !== 'object'){
+              throw {error: 'Options is not an object!'};
+            }
+            if (options === {}){
+              throw {error: 'Options are empty'};
+            }
+          }
+          catch (err){
+            console.log(err);
+          }
+          var baseUrl = this.getConn(),
+          url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+          return url;
+        },
           //Stores layer details
         layers: [],
 
@@ -240,7 +255,7 @@
         },
 
         //Method that gets data about the server
-        request: function(options){
+        request: function(service, options){
           //Check that option are set as an object
           try {
             if (typeof options !== 'object') {
@@ -255,14 +270,14 @@
           }
           var that = this,
               //Get host
-              baseUrl = that.getConn(),
+              // baseUrl = that.getConn(),
               //Set config
               config = {
                 params: {f:'json'},
                 cache: base
               },
               //Set url
-              url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+              url = service; //baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
