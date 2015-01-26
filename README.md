@@ -94,7 +94,7 @@ Make request to server
 
 ```javascript
 
-//Make request to Server
+//Set service
 var myFeatureService = testServer.setService(options);
 
 ```
