@@ -51,6 +51,7 @@ angular.module('app', ['agsserver']).
       console.log(data);
       $scope.boundary = data;
     });
+    
     // testServer.request(boundaryOptions)
     // .then(function(data){
     //   console.log('Polygon Data');
