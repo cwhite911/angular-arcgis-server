@@ -14,7 +14,8 @@
     "arcgis server",
     "ArcGIS",
     "Server",
-    "geojson"
+    "geojson",
+    "leaflet"
   ],
   "license": "MIT",
   "private": false,
