@@ -12,11 +12,22 @@ angular.module('app', ['agsserver']).
       server: 'FeatureServer'
     };
 
+    var myService1 = {
+      folder: 'PublicUtility',
+      service: 'ProjectTracking',
+      server: 'MapServer'
+    };
+
     var pt_fs = testServer.setService(myService);
+
+
     console.log(pt_fs);
 
     //Set up options
     var options1 = {
+      folder: 'PublicUtility',
+      service: 'ProjectTracking',
+      server: 'FeatureServer',
       layer: 'RPUD.Project_Envelopes',
       params: {
         f: 'json',
@@ -31,7 +42,13 @@ angular.module('app', ['agsserver']).
       actions: 'query'
     };
 
-    testServer.request(pt_fs, options1)
+    testServer.setService(myService1).request(options1)
+    .then(function(data){
+      console.log(data);
+      $scope.test = data;
+    });
+
+    testServer.request(options1)
       .then(function(data){
       console.log(data);
       $scope.streams = data;
@@ -46,62 +63,13 @@ angular.module('app', ['agsserver']).
       actions: 'query'
     };
 
-    testServer.request(pt_fs, options2)
+    pt_fs.request(options2)
     .then(function(data){
       console.log(data);
       $scope.boundary = data;
     });
-    
-    // testServer.request(boundaryOptions)
-    // .then(function(data){
-    //   console.log('Polygon Data');
-    //   console.log(data);
-    //   $scope.boundary = data;
-    // });
-    //
-    //
-    // var projectOptions = {
-    //   f: 'json',
-    //   geometries: {
-    //     geometryType: 'esriGeometryPoint',
-    //     geometries: [ {"x": -76.9346809387207 , "y": 38.1779196445415 }]
-    //   },
-    //   inSR: 4326,
-    //   outSR: 102100
-    // };
-    //
-    // testServer.utilsGeom('project', projectOptions)
-    //   .then(function(data){
-    //
-    //     var sampleLocationsOptions = {
-    //       folder: 'GEWA',
-    //       layer: 'Sample Locations',
-    //       service: 'gewa_sde',
-    //       server: 'FeatureServer',
-    //       params: {
-    //         f: 'json',
-    //         gdbVersion: 'SDE.DEFAULT',
-    //         features: [
-    //           {
-    //             "geometry": data.geometries[0]
-    //           }
-    //         ]
-    //     },
-    //     actions: 'addFeatures',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   };
-    //
-    //
-    //
-    //     testServer.request(sampleLocationsOptions)
-    //     .then(function(data){
-    //       console.log('Point Data');
-    //       console.log(data);
-    //       $scope.gamefish = data;
-    //     });
-    //   })
 
 
-  }]);
+
+
+}]);

@@ -56,6 +56,7 @@ Create ArcGIS server object
 ```javascript
 
 //Create new server object
+
 var testServer = new Ags({'host': <Your Host> });
 
 ```
@@ -65,7 +66,7 @@ var testServer = new Ags({'host': <Your Host> });
 
 #### setService(options)
 
-##### Sets a service that can be reused to make sperate requests to the same service
+##### Returns a Server object set to make requests on a specified service.
 
 Options (object)
 
@@ -82,6 +83,7 @@ Define options
 ```javascript
 
 //Setup options
+
 var options = {
   folder: <folder>,
   service: <service>,
@@ -95,13 +97,14 @@ Make request to server
 ```javascript
 
 //Set service
+
 var myFeatureService = testServer.setService(options);
 
 ```
 
-#### request(service, options)
+#### request(options)
 
-##### Makes request to server and takes a single options object as a parameter.
+##### Makes request to server and returns promise, a specific service can be set using the setService method or by including the folder, service and server in the option parameter.
 
 Parameters
 
@@ -116,21 +119,27 @@ Options (object)
 
 | Parameter  | Details | Type | Required | Default |
 | :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| folder  | Name of folder  | *String* | false | null |
+| service | Name of service | *String* | false | null |
+| server  | Type of server <ul><li>'FeatureServer'</li><li>'MapServer'</li><li>'GPServer'</li></ul> | *String* | false | 'FeatureServer' |
 | layer   | Name of layer   | *String* | true | null |
 | actions | The type of request sent to the server <ul><li>'query'</li><li>'applyEdits'</li><li>'addFeatures'</li><li>'updateFeatures'</li><li>'deleteFeatures'</li><li>'generateRenderer'</li></ul> | *String* | true | 'query' |
-| params  | Parameters matching setting defined in [ArcGIS Server 10.22 REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/The_ArcGIS_REST_API/02r300000054000000/)| Object | true | null |
+| params  | Parameters matching setting defined in [ArcGIS Server 10.2.2 REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/The_ArcGIS_REST_API/02r300000054000000/)| Object | true | null |
 | geojson | Controls whether or not to return response as geojson | *Boolean* | false | false |
 | timeout | Set timeout | *Number* | false | 5000 |
 | header  | Set request header | *Object* | false | {'Content-Type': 'text/plain'} |
 
-#### Example
+#### Example 1
 
-Define options
+Define options with no service set
 
 ```javascript
 
-//Setup options
+//Setup request options
 var options = {
+  folder: <folder>,
+  service: <service>,
+  server: 'FeatureServer',
   layer: <layer>,
   geojson: true,
   actions: 'query'
@@ -147,12 +156,61 @@ Make request to server
 ```javascript
 
 //Make request to Server
-testServer.request(<service>, options)
+
+testServer.request(options)
 .then(function(data){
   //Do something
 });
 
 ```
+
+#### Example 2
+
+Create service
+
+```javascript
+
+//Setup setService options
+
+var options = {
+  folder: <folder>,
+  service: <service>,
+  server: 'FeatureServer',
+};
+
+//Create service object
+
+var myFeatureService = testServer.setService(options);
+
+```
+
+Make request to server
+
+```javascript
+
+//Setup request options
+
+var options = {
+  layer: <layer>,
+  geojson: true,
+  actions: 'query'
+  params: {
+    f: 'json',
+    where: 'OBJECTID > 0'
+  }
+};
+
+//Make request
+
+myFeatureService.request(options)
+  .then(function(data){
+    //Do something
+  });
+
+
+```
+
+
 
 #### utilsGeom(type, options)
 

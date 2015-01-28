@@ -132,6 +132,7 @@
       };
 
 
+
       //Server class methods in prototype//////////////////////////////////////////////////////////////////////////
 
       Server.prototype = {
@@ -189,7 +190,9 @@
           }
           var baseUrl = this.getConn(),
           url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-          return url;
+          var newService = new Server(this.conn);
+          newService.serviceUrl = url;
+          return newService;
         },
           //Stores layer details
         layers: [],
@@ -255,7 +258,7 @@
         },
 
         //Method that gets data about the server
-        request: function(service, options){
+        request: function(options){
           //Check that option are set as an object
           try {
             if (typeof options !== 'object') {
@@ -270,14 +273,14 @@
           }
           var that = this,
               //Get host
-              // baseUrl = that.getConn(),
+              baseUrl = that.getConn(),
               //Set config
               config = {
                 params: {f:'json'},
                 cache: base
               },
               //Set url
-              url = service; //baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+              url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
@@ -339,6 +342,12 @@
         }
 
       };
+      //Service constructor
+      // var Service = function (conn, service){
+      //   Server.apply(this, arguments);
+      //   this.serviceUrl = service;
+      // };
+
       //Returns server contructor class
       return (Server);
     }
