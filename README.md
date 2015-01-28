@@ -108,13 +108,6 @@ var myFeatureService = testServer.setService(options);
 
 Parameters
 
-Service (string)
-
-| Parameter  | Details | Type | Required | Default |
-| :------------- | ------------- | :-----------: | :-----------: | -------------- |
-| service   | Service to make request   | *String* | true | null |
-
-
 Options (object)
 
 | Parameter  | Details | Type | Required | Default |
