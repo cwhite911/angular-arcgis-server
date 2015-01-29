@@ -41,6 +41,8 @@ controller('test', [ 'Ags', function(Ags){}]);
 
 #### Ags(options)
 
+##### Returns new server object
+
 Options (object)
 
 | Parameter  | Details | Type | Required | Default |
@@ -205,7 +207,7 @@ myFeatureService.request(options)
 
 #### Example 3
 
-Find on a map service
+Use Find action on a mapServer
 
 ##### Note
 
