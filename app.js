@@ -19,9 +19,8 @@ angular.module('app', ['agsserver']).
     };
 
     var pt_fs = testServer.setService(myService);
+    var pt_ms = testServer.setService(myService1);
 
-
-    console.log(pt_fs);
 
     //Set up options
     var options1 = {
@@ -42,7 +41,24 @@ angular.module('app', ['agsserver']).
       actions: 'query'
     };
 
-    testServer.setService(myService1).request(options1)
+    var options3 = {
+      params: {
+        f: 'json',
+        searchText: 'retreat',
+        searchFields: 'PROJECTNAME',
+        layers: 'Project Tracking, RPUD.PTK_DOCUMENTS, RPUD.Project_Envelopes',
+        sr: 4326
+      },
+      actions: 'find',
+      geojson: true
+    };
+
+
+
+    console.log('MapServer: ' + pt_ms);
+    console.log(pt_ms);
+
+    pt_ms.request(options1)
     .then(function(data){
       console.log(data);
       $scope.test = data;
@@ -70,6 +86,11 @@ angular.module('app', ['agsserver']).
     });
 
 
+    pt_ms.request(options3)
+    .then(function(data){
+      console.log(data);
+      $scope.find = data;
+    });
 
 
 }]);

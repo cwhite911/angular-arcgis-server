@@ -44,54 +44,60 @@
       //Returns ArcGIS Server returned json as geojson
       //Parameters- data is the returned data from ArcGIS server
       toGeojson: function (data){
-        var features = data.features, feature, geojson;
+        var features, feature, geojson;
+          //Geojson shell format
+          geojson = {
+            "type": "FeatureCollection",
+            "features": []
+          };
 
-        //Geojson shell format
-        geojson = {
-          "type": "FeatureCollection",
-          "features": []
-        };
+          try {
+            //Check Spatial Reference
+            if (data.features && data.spatialReference.wkid === 4326) {
+              features = data.features;
+            }
+            else if (data.results[0].geometry.spatialReference.wkid === 4326){
+              features = data.results;
+            }
+            else {
+              throw {error: 'Please set params outSR to 4326'};
+            }
+            //Loop through each feature from esri response
+            for (var _i = 0,  _len = features.length; _i < _len; _i++){
+              feature = features[_i];
+              //Check geometry type
+              switch (data.geometryType || feature.geometryType) {
 
-        try {
-          //Check Spatial Reference
-          if (data.spatialReference.wkid !== 4326) {
-            throw {error: 'Please set params outSR to 4326'};
-          }
-          //Loop through each feature from esri response
-          for (var _i = 0,  _len = features.length; _i < _len; _i++){
-            feature = features[_i];
-            //Check geometry type
-            switch (data.geometryType) {
+                case 'esriGeometryPoint':
+                  //Add feature to geojson
+                  geojson.features.push(this.geoJsonFeature(feature, 'Point'));
+                  break;
 
-              case 'esriGeometryPoint':
-                //Add feature to geojson
-                geojson.features.push(this.geoJsonFeature(feature, 'Point'));
-                break;
+                case 'esriGeometryPolyline':
+                  //Add feature to geojson
+                  geojson.features.push(this.geoJsonFeature(feature, 'LineString'));
+                  break;
 
-              case 'esriGeometryPolyline':
-                //Add feature to geojson
-                geojson.features.push(this.geoJsonFeature(feature, 'LineString'));
-                break;
+                case 'esriGeometryPolygon':
+                  //Add feature to geojson
+                  geojson.features.push(this.geoJsonFeature(feature, 'Polygon'));
+                  break;
 
-              case 'esriGeometryPolygon':
-                //Add feature to geojson
-                geojson.features.push(this.geoJsonFeature(feature, 'Polygon'));
-                break;
+                default:
+                  throw {error: 'esri geometry not recognized, failed geojson conversion'};
 
-              default:
-                throw {error: 'esri geometry not recognized, failed geojson conversion'};
-
+                }
               }
+
+            }
+            catch(err){
+              console.log(err);
+            }
+            finally {
+              return geojson;
             }
 
-          }
-          catch(err){
-            console.log(err);
-          }
-          finally {
-            return geojson;
-          }
-        }
+      }
     };
 
   });
@@ -111,6 +117,7 @@
       //Returns layer id
       var getLayerId = function (_layers, layerName) {
         var layerId;
+        layerName = layerName.trim();
         _layers.forEach(function(layer){
           layerName === layer.name ? layerId = layer.id : layer;
         });
@@ -118,6 +125,16 @@
       };
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      var getLayerIdList = function (_layers, layerString){
+        console.log(layerString);
+        var layerlist = layerString.split(','),
+        idlist = layerlist.map(function(layer){
+          return getLayerId(_layers, layer);
+        });
+        return idlist;
+      };
+
 
       //Constructor Class
 
@@ -151,7 +168,8 @@
         },
 
         //Server Actions
-        actions: [{
+        actions: [
+          {
             type: 'query',
             method: 'GET' || 'POST'
           },
@@ -174,7 +192,20 @@
           {
             type: 'generateRenderer',
             method: 'GET'
-          }],
+          },
+          {
+            type: 'identify',
+            method: 'GET',
+          },
+          {
+            type: 'find',
+            method: 'GET'
+          },
+          {
+            type: 'export',
+            method: 'GET',
+          }
+        ],
 
         setService: function (options) {
           try {
@@ -205,7 +236,7 @@
             if (action.type === options.actions){
               req = {
                 method: action.method,
-                url: url + '/' + layerId + '/' + action.type,
+                url: layerId ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
                 headers: options.headers || {'Content-Type': 'text/plain'},
                 params: options.params || {},
                 timeout: options.timeout || 5000
@@ -219,10 +250,6 @@
           return req;
         },
 
-        //Delete last feature added
-        deleteLastFeature: function () {
-
-        },
         //Use server utilities
         utilsGeom: function (type, options) {
           //Check that option are set as an object
@@ -288,7 +315,7 @@
                 //Concat layers and tables array
                 var _layers = res.data.layers.concat(res.data.tables);
                 //set layers if layer has not been set
-                _layers.length > 0 && that.layers.length === 0 ?
+                that.layers.length === 0 ?
                 that.layers = [{
                   folder: options.folder,
                   service: [{
@@ -298,13 +325,32 @@
                   }],
                 }] : that.layers;
 
-                //Gets the layer id for requested layer
-                var layerId = getLayerId(_layers, options.layer);
-                //Checks if layerId is a number and returns it else it rejects the promise
-                if(typeof layerId === 'number'){
-                  return layerId;
-                }else{
-                  return  $q.reject(res.data);
+                //Checks if layer option is set if not is checks action tpye
+                if (!options.layer){
+                  switch (options.actions){
+                    case 'find':
+                    case 'identify':
+                    case 'export':
+                      if (options.params.layers){
+                        options.params.layers = getLayerIdList(_layers, options.params.layers);
+                      }
+                      break;
+                    default:
+                      return;
+                  }
+                  //Returns undefinded if no layer is set
+                  return;
+                }
+                //If layer option is set returns layer id
+                else {
+                  //Gets the layer id for requested layer
+                  var layerId = getLayerId(_layers, options.layer);
+                  //Checks if layerId is a number and returns it else it rejects the promise
+                  if(typeof layerId === 'number'){
+                    return layerId;
+                  }else{
+                    return  $q.reject(res.data);
+                  }
                 }
 
 	            }
@@ -342,11 +388,7 @@
         }
 
       };
-      //Service constructor
-      // var Service = function (conn, service){
-      //   Server.apply(this, arguments);
-      //   this.serviceUrl = service;
-      // };
+    
 
       //Returns server contructor class
       return (Server);
