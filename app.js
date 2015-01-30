@@ -46,7 +46,7 @@ angular.module('app', ['agsserver']).
         f: 'json',
         searchText: 'retreat',
         searchFields: 'PROJECTNAME',
-        layers: 'Project Tracking, RPUD.PTK_DOCUMENTS, RPUD.Project_Envelopes',
+        layers: 'all',
         sr: 4326
       },
       actions: 'find',

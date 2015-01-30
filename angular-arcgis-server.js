@@ -126,13 +126,22 @@
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      //Returns string list of layerids or reserved word
       var getLayerIdList = function (_layers, layerString){
-        console.log(layerString);
-        var layerlist = layerString.split(','),
-        idlist = layerlist.map(function(layer){
-          return getLayerId(_layers, layer);
-        });
-        return idlist;
+        //List of reserved layers values
+        var resevedStrings = ['all', 'visible', 'top', ''];
+        //Chekc if layer value is in list of reserved words, if not get layer id
+        if (resevedStrings.indexOf(layerString) === -1){
+          var layerlist = layerString.split(','),
+          idlist = layerlist.map(function(layer){
+            return getLayerId(_layers, layer);
+          });
+          return idlist;
+        }
+        else {
+          return layerString;
+        }
+
       };
 
 
@@ -388,7 +397,7 @@
         }
 
       };
-    
+
 
       //Returns server contructor class
       return (Server);
