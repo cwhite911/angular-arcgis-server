@@ -212,11 +212,13 @@ Use Find action on a mapServer
 ##### Note
 
 ```
-In params.layers use layer names not layer ids
+In params.layers use layer names, layer ids or mixed
 
-Yes- params.layers = 'buildings, roads, addresses'
+Yes- params.layers = 'buildings, roads, addresses';
 
-No - params.layers = '0,1,2'
+Yes - params.layers = '0,1,2';
+
+Yes - params.layers = 'buildings, 1, addresses';
 
 ```
 
@@ -249,7 +251,7 @@ var options3 = {
     f: 'json',
     searchText: 'Main St',
     searchFields: 'street_address',
-    layers: 'buildings, roads, addresses', //Use layer names not ids
+    layers: '0, roads, 2', //Use layer names or layer ids
     sr: 4326
   },
   actions: 'find',

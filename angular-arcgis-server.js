@@ -134,7 +134,14 @@
         if (resevedStrings.indexOf(layerString) === -1){
           var layerlist = layerString.split(','),
           idlist = layerlist.map(function(layer){
-            return getLayerId(_layers, layer);
+            //Checks if number is value
+            var isnum = /^\d+$/.test(layer);
+            if (isnum){
+              return layer;
+            }
+            else{
+              return getLayerId(_layers, layer);
+            }
           });
           return idlist;
         }

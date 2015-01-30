@@ -46,7 +46,7 @@ angular.module('app', ['agsserver']).
         f: 'json',
         searchText: 'retreat',
         searchFields: 'PROJECTNAME',
-        layers: 'all',
+        layers: '1',
         sr: 4326
       },
       actions: 'find',
