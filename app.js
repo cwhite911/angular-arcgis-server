@@ -3,94 +3,37 @@
 angular.module('app', ['agsserver']).
   controller('test', ['$scope', '$http', 'Ags', function($scope, $http, Ags){
     //Create new server object
-    var testServer = new Ags({host: 'mapstest.raleighnc.gov'});
-    console.log(testServer);
 
-    var myService = {
-      folder: 'PublicUtility',
-      service: 'ProjectTracking',
-      server: 'FeatureServer'
-    };
-
-    var myService1 = {
-      folder: 'PublicUtility',
-      service: 'ProjectTracking',
-      server: 'MapServer'
-    };
-
-    var pt_fs = testServer.setService(myService);
-    var pt_ms = testServer.setService(myService1);
-
-
-    //Set up options
-    var options1 = {
-      folder: 'PublicUtility',
-      service: 'ProjectTracking',
-      server: 'FeatureServer',
-      layer: 'RPUD.Project_Envelopes',
-      params: {
-        f: 'json',
-        where: 'OBJECTID > 0 AND OBJECTID < 10',
-        outSR: 4326
-      },
-      headers: {
-        'Content-Type': 'text/plain'
-      },
-      timeout: 5000,
-      geojson: true,
-      actions: 'query'
-    };
-
-    var options3 = {
-      params: {
-        f: 'json',
-        searchText: 'retreat',
-        searchFields: 'PROJECTNAME',
-        layers: '1',
-        sr: 4326
-      },
-      actions: 'find',
-      geojson: true
-    };
-
-
-
-    console.log('MapServer: ' + pt_ms);
-    console.log(pt_ms);
-
-    pt_ms.request(options1)
-    .then(function(data){
-      console.log(data);
-      $scope.test = data;
+    var mapsServer = new Ags({host: 'maps.raleighnc.gov'});
+    // var streetServer = new Ags({host: 'maps.raleighnc.gov'});
+    // console.log(streetServer);
+    // var streetCache = $cacheFactory('streetCache');
+    var streets_ms = mapsServer.setService({
+      folder:'StreetsDissolved',
+      service: '',
+      server: 'MapServer',
     });
+    console.log(streets_ms);
+    //Auto fill function for street names
 
-    testServer.request(options1)
+      var streetOptions = {
+        layer: 'Streets',
+        geojson: false,
+        actions: 'query',
+        params: {
+          f: 'json',
+          outFields: 'CARTONAME',
+          text: 'W',
+          returnGeometry: false,
+          orderByFields: 'CARTONAME ASC'
+        }
+      };
+      streets_ms.request(streetOptions)
       .then(function(data){
-      console.log(data);
-      $scope.streams = data;
-    });
-
-    var options2 = {
-      layer: 'RPUD.SHEETTYPES',
-      params: {
-        f: 'json',
-        where: 'OBJECTID > 0',
-      },
-      actions: 'query'
-    };
-
-    pt_fs.request(options2)
-    .then(function(data){
-      console.log(data);
-      $scope.boundary = data;
-    });
+        $scope.street = data;
+      });
 
 
-    pt_ms.request(options3)
-    .then(function(data){
-      console.log(data);
-      $scope.find = data;
-    });
 
 
 }]);

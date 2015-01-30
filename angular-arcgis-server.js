@@ -247,12 +247,14 @@
         //Sets actions options for request
         setRequst: function (url, layerId, options){
           var req;
+          console.log(layerId);
+          console.log(typeof layerId);
           // Request parameters
           this.actions.forEach(function(action){
             if (action.type === options.actions){
               req = {
                 method: action.method,
-                url: layerId ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
+                url: layerId || layerId === 0 ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
                 headers: options.headers || {'Content-Type': 'text/plain'},
                 params: options.params || {},
                 timeout: options.timeout || 5000
@@ -380,7 +382,7 @@
             .then(function(layerId){
               // Request parameters
             var req = that.setRequst(url, layerId, options);
-
+            console.log(req);
               //Make request to server and return promise
               return $http(req)
               .then(function(res){
