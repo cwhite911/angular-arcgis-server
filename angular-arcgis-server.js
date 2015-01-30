@@ -247,8 +247,6 @@
         //Sets actions options for request
         setRequst: function (url, layerId, options){
           var req;
-          console.log(layerId);
-          console.log(typeof layerId);
           // Request parameters
           this.actions.forEach(function(action){
             if (action.type === options.actions){
@@ -295,7 +293,7 @@
             params: options
           };
           return $http.get(url, config).then(function(res){
-            console.log(res.data);
+            // console.log(res.data);
             return res.data;
           }, function(res){
             return $q.reject(res.data);
@@ -382,7 +380,6 @@
             .then(function(layerId){
               // Request parameters
             var req = that.setRequst(url, layerId, options);
-            console.log(req);
               //Make request to server and return promise
               return $http(req)
               .then(function(res){
