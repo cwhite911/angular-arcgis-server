@@ -248,30 +248,33 @@
         setRequst: function (url, layerId, options){
           var req;
           // Request parameters
-          this.actions.forEach(function(action){
-            if (action.type === options.actions){
-              req = {
-                method: action.method,
-                url: layerId || layerId === 0 ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
-                headers: options.headers || {'Content-Type': 'text/plain'},
-                params: options.params || {},
-                timeout: options.timeout || 5000
-              };
-              if (action.method === 'POST'){
-                req.params.features = JSON.stringify(req.params.features);
-                // base.put('lastOID', )
+          if (options.actions){
+            this.actions.forEach(function(action){
+              if (action.type === options.actions){
+                req = {
+                  method: action.method,
+                  url: layerId || layerId === 0 ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
+                  headers: options.headers || {'Content-Type': 'text/plain'},
+                  params: options.params || {},
+                  timeout: options.timeout || 5000
+                };
+                if (action.method === 'POST'){
+                  req.params.features = JSON.stringify(req.params.features);
+                  // base.put('lastOID', )
+                }
               }
-            }
-            else {
-              req = {
-                method: 'GET',
-                url: layerId || layerId === 0 ? url + '/' + layerId : url,
-                headers: options.headers || {'Content-Type': 'text/plain'},
-                params: options.params || {f: 'json'},
-                timeout: options.timeout || 5000
-              };
-            }
-          });
+            });
+          }
+          else {
+            req = {
+              method: 'GET',
+              url: layerId || layerId === 0 ? url + '/' + layerId : url,
+              headers: options.headers || {'Content-Type': 'text/plain'},
+              params: options.params || {f: 'json'},
+              timeout: options.timeout || 5000
+            };
+          }
+
           return req;
         },
 
