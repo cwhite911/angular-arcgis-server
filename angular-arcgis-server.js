@@ -262,6 +262,15 @@
                 // base.put('lastOID', )
               }
             }
+            else {
+              req = {
+                method: 'GET',
+                url: layerId || layerId === 0 ? url + '/' + layerId : url,
+                headers: options.headers || {'Content-Type': 'text/plain'},
+                params: options.params || {f: 'json'},
+                timeout: options.timeout || 5000
+              };
+            }
           });
           return req;
         },
