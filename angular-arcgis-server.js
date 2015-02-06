@@ -339,7 +339,7 @@
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
-              if (typeof res.data === 'object') {
+              if (typeof res.data === 'object' && !res.data.error) {
                 //Concat layers and tables array
                 var _layers = res.data.layers.concat(res.data.tables);
                 //set layers if layer has not been set
@@ -384,6 +384,7 @@
 	            }
               else {
 	            // invalid response
+                console.log(res.data.error);
 	               return $q.reject(res.data);
 	            }
             }, function(res){
