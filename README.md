@@ -321,3 +321,8 @@ testServer.utilsGeom('project', projectOptions)
 
 
 ```
+
+#### Contribute
+
+Contributions are welcomed! Please just fork and submit a pull request.
+Thanks!
