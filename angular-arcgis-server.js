@@ -302,7 +302,8 @@
 
           //Configuration
           config = {
-            params: options
+            params: options,
+            header: {'Content-Type': 'text/plain'}
           };
           return $http.post(url, config).then(function(res){
             // console.log(res.data);
