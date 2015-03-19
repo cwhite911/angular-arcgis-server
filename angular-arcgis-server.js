@@ -304,7 +304,7 @@
           config = {
             params: options
           };
-          return $http.get(url, config).then(function(res){
+          return $http.post(url, config).then(function(res){
             // console.log(res.data);
             return res.data;
           }, function(res){
