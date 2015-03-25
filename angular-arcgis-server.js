@@ -467,13 +467,14 @@
                 baseUrl = that.getConn(),
                 //Set config
                 config = {
-                  data: $.param({
+                  params: {
                     f:'json',
                     token: options.token,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                  }),
+                  },
                   cache: base
                 },
+                
                 //Set url
                 url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
