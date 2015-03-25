@@ -118,9 +118,11 @@
       var getLayerId = function (_layers, layerName) {
         var layerId;
         layerName = layerName.trim();
+
         _layers.forEach(function(layer){
-          layerName === layer.name ? layerId = layer.id : layer;
+          layerId = layerName === layer.name ? layer.id : layer;
         });
+
         return layerId;
       };
 
@@ -179,7 +181,7 @@
         getConn: function () {
           var c = this.conn;
           var url = c.protocol + '://' + c.host + c.path;
-          c.host ? url : console.log('Error: Please set host');
+
           return url;
         },
 
@@ -344,14 +346,13 @@
                 //Concat layers and tables array
                 var _layers = res.data.layers.concat(res.data.tables);
                 //set layers if layer has not been set
-                that.layers.length === 0 ?
-                that.layers = [{
+                that.layers = that.layers.length === 0 ? [{
                   folder: options.folder,
                   service: [{
                     name: options.service,
                     server: options.server,
                     layers: _layers
-                  }],
+                  }]
                 }] : that.layers;
 
                 //Checks if layer option is set if not is checks action tpye
@@ -414,13 +415,38 @@
                 return $q.reject(res.data);
               });
             });
-        }
-
-      };
+        },
 
 
+        //Get Access token
+        requestToken: function (user, password, exp){
+          exp = exp || 60;
+          var c = this.conn,
+              url = c.protocol + '://' + c.host + '/arcgis/tokens/',
+              deferred = $q.defer();
+                $http({
+                  method: 'POST',
+                  url: url,
+                  data: $.param(
+                    {
+                      request: 'getToken',
+                      username: user,
+                      password: password,
+                      expiration: exp,
+                      f: 'json'
+                    }),
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).success(function (data) {
+                  deferred.resolve(data.token);
+                });
+                return deferred.promise;
+
+          }
+        };
       //Returns server contructor class
       return (Server);
     }
   ]);
+
+
 })();
