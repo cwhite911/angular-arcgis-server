@@ -260,13 +260,6 @@
                   params: options.params || {},
                   timeout: options.timeout || 5000
                 };
-
-                if (options.token){
-                  req.method = 'POST';
-                  req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-                  req.data = $.param({f: 'json', token: options.token});
-                }
-
                 if (action.method === 'POST'){
                   req.params.features = JSON.stringify(req.params.features);
                   // base.put('lastOID', )
@@ -275,7 +268,6 @@
             });
           }
           else {
-
             req = {
               method: 'GET',
               url: layerId || layerId === 0 ? url + '/' + layerId : url,
@@ -283,14 +275,6 @@
               params: options.params || {f: 'json'},
               timeout: options.timeout || 5000
             };
-
-            if (options.token){
-              delete req.params;
-              req.method = 'POST';
-              req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-              req.data = $.param({f: 'json', token: options.token});
-            }
-
           }
 
           return req;
@@ -345,7 +329,6 @@
           catch (err){
             console.log(err);
           }
-
           var that = this,
               //Get host
               baseUrl = that.getConn(),
@@ -356,11 +339,6 @@
               },
               //Set url
               url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-
-          //set token if given
-          if (options.token){
-            config.params.token = options.token;
-          }
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){
@@ -469,6 +447,7 @@
       return (Server);
     }
   ]);
+
 
 
 })();
