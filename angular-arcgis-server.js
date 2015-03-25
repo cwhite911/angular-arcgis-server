@@ -263,6 +263,7 @@
 
                 if (options.token){
                   req.method = 'POST';
+                  req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
                 }
 
                 if (action.method === 'POST'){
@@ -281,9 +282,10 @@
               params: options.params || {f: 'json'},
               timeout: options.timeout || 5000
             };
-            
+
             if (options.token){
               req.method = 'POST';
+              req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
             }
 
           }
