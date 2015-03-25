@@ -260,7 +260,7 @@
                   params: options.params || {},
                   timeout: options.timeout || 5000
                 };
-                
+
                 if (options.token){
                   req.method = 'POST';
                 }
@@ -273,6 +273,7 @@
             });
           }
           else {
+
             req = {
               method: 'GET',
               url: layerId || layerId === 0 ? url + '/' + layerId : url,
@@ -280,6 +281,11 @@
               params: options.params || {f: 'json'},
               timeout: options.timeout || 5000
             };
+            
+            if (options.token){
+              req.method = 'POST';
+            }
+
           }
 
           return req;
