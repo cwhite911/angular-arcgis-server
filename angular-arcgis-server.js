@@ -260,6 +260,11 @@
                   params: options.params || {},
                   timeout: options.timeout || 5000
                 };
+                
+                if (options.token){
+                  req.method = 'POST';
+                }
+
                 if (action.method === 'POST'){
                   req.params.features = JSON.stringify(req.params.features);
                   // base.put('lastOID', )
