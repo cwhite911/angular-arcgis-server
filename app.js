@@ -9,32 +9,34 @@ angular.module('app', ['agsserver']).
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');
     var streets_ms = mapsServer.setService({
-      folder:'StreetsDissolved',
-      service: '',
-      server: 'MapServer',
+      folder:'PublicUtility',
+      service: 'ProjectTracking',
+      server: 'FeatureServer',
     });
 
-    
+
 
 
     console.log(streets_ms);
     //Auto fill function for street names
 
       var streetOptions = {
-        layer: 'Streets',
+        layer: 'Project Tracking',
         geojson: false,
         actions: 'query',
         params: {
           f: 'json',
-          outFields: 'CARTONAME',
-          text: 'W',
+          where: 'OBJECTID > 1',
           returnGeometry: false,
-          orderByFields: 'CARTONAME ASC'
+          outSR: 4326
         }
       };
       streets_ms.request(streetOptions)
       .then(function(data){
         $scope.street = data;
+      },
+      function(err){
+        console.log(err);
       });
 
 

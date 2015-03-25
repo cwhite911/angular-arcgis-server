@@ -120,7 +120,11 @@
         layerName = layerName.trim();
 
         _layers.forEach(function(layer){
-          layerId = layerName === layer.name ? layer.id : layer;
+          if (layerName === layer.name){
+            layerId = layer.id;
+          }
+          // layerId = layerName === layer.name ? layer.id : layer;
+          // layerName === layer.name ? layerId = layer.id : layer;
         });
 
         return layerId;
@@ -181,7 +185,7 @@
         getConn: function () {
           var c = this.conn;
           var url = c.protocol + '://' + c.host + c.path;
-
+          // c.host ? url : console.log('Error: Please set host');
           return url;
         },
 
@@ -355,6 +359,7 @@
                   }]
                 }] : that.layers;
 
+
                 //Checks if layer option is set if not is checks action tpye
                 if (!options.layer){
                   switch (options.actions){
@@ -441,6 +446,113 @@
                 });
                 return deferred.promise;
 
+          },
+
+          //Request with token
+          authRequest: function (options){
+            //Check that option are set as an object
+            try {
+              if (typeof options !== 'object') {
+                throw {error: 'Options is not an object!'};
+              }
+              if (options === {}){
+                 throw {error: 'Options are empty'};
+              }
+            }
+            catch (err){
+              console.log(err);
+            }
+            var that = this,
+                //Get host
+                baseUrl = that.getConn(),
+                //Set config
+                config = {
+                  data: $.param({
+                    f:'json',
+                    token: options.token,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                  }),
+                  cache: base
+                },
+                //Set url
+                url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+
+            //Gets the base of the ArcGIS server structure
+            return $http.post(url, config).then(function(res){
+                if (typeof res.data === 'object' && !res.data.error) {
+                  //Concat layers and tables array
+                  var _layers = res.data.layers.concat(res.data.tables);
+                  //set layers if layer has not been set
+                  that.layers = that.layers.length === 0 ? [{
+                    folder: options.folder,
+                    service: [{
+                      name: options.service,
+                      server: options.server,
+                      layers: _layers
+                    }]
+                  }] : that.layers;
+
+
+                  //Checks if layer option is set if not is checks action tpye
+                  if (!options.layer){
+                    switch (options.actions){
+                      case 'find':
+                      case 'identify':
+                      case 'export':
+                        if (options.params.layers){
+                          options.params.layers = getLayerIdList(_layers, options.params.layers);
+                        }
+                        break;
+                      default:
+                        return;
+                    }
+                    //Returns undefinded if no layer is set
+                    return;
+                  }
+                  //If layer option is set returns layer id
+                  else {
+                    //Gets the layer id for requested layer
+                    var layerId = getLayerId(_layers, options.layer);
+                    //Checks if layerId is a number and returns it else it rejects the promise
+                    if(typeof layerId === 'number'){
+                      return layerId;
+                    }else{
+                      return  $q.reject(res.data);
+                    }
+                  }
+
+  	            }
+                else {
+  	            // invalid response
+                  console.log(res.data.error);
+  	               return $q.reject(res.data);
+  	            }
+              }, function(res){
+                return $q.reject(res.data);
+              })
+              .then(function(layerId){
+                // Request parameters
+              var req = that.setRequst(url, layerId, options);
+                //Make request to server and return promise
+                return $http(req)
+                .then(function(res){
+                  if (typeof res.data === 'object') {
+                    if (options.geojson === true){
+                      return geojsonTools.toGeojson(res.data);
+                    }
+                    return res.data;
+                  }
+                  else {
+                    // invalid response
+                    console.log('invalide response');
+                    return $q.reject(res.data);
+                  }
+                }, function(res){
+                  //Something went wrong
+                  console.log({error: 'Promise rejected - Check your options and server'});
+                  return $q.reject(res.data);
+                });
+              });
           }
         };
       //Returns server contructor class
