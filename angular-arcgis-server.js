@@ -264,6 +264,7 @@
                 if (options.token){
                   req.method = 'POST';
                   req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+                  req.data = $.param({f: 'json', token: options.token});
                 }
 
                 if (action.method === 'POST'){
@@ -284,15 +285,16 @@
             };
 
             if (options.token){
+              delete req.params;
               req.method = 'POST';
               req.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+              req.data = $.param({f: 'json', token: options.token});
             }
 
           }
 
           return req;
         },
-
 
         //Use server utilities
         utilsGeom: function (type, options) {
