@@ -280,6 +280,7 @@
           return req;
         },
 
+
         //Use server utilities
         utilsGeom: function (type, options) {
           //Check that option are set as an object
@@ -329,6 +330,7 @@
           catch (err){
             console.log(err);
           }
+
           var that = this,
               //Get host
               baseUrl = that.getConn(),
@@ -339,6 +341,11 @@
               },
               //Set url
               url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+
+          //set token if given
+          if (options.token){
+            config.params.token = options.token;
+          }
 
           //Gets the base of the ArcGIS server structure
           return $http.get(url, config).then(function(res){

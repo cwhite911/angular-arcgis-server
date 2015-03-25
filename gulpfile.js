@@ -41,7 +41,7 @@ var gulp = require('gulp'),
 
     gulp.task('serve', function () {
       nodemon({ script: 'server.js', ext: 'html js'})
-      .on('change', ['lint', 'compress', 'html'])
+      .on('change', ['lint', 'compress'])
       .on('restart', function () {
         console.log('restarted!');
       });
