@@ -424,22 +424,21 @@
 
 
         //Get Access token
-        requestToken: function (user, password, exp){
+        requestToken: function (options){
           exp = exp || 60;
+          var reqOptions = {
+            request: 'getToken'
+          };
+
+          angular.extends(reqOptions, options);
+
           var c = this.conn,
               url = c.protocol + '://' + c.host + '/arcgis/tokens/',
               deferred = $q.defer();
                 $http({
                   method: 'POST',
                   url: url,
-                  data: $.param(
-                    {
-                      request: 'getToken',
-                      username: user,
-                      password: password,
-                      expiration: exp,
-                      f: 'json'
-                    }),
+                  data: $.param(reqOptions),
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).success(function (data) {
                   deferred.resolve(data.token);
@@ -450,18 +449,7 @@
 
           //Request with token
           authRequest: function (options){
-            //Check that option are set as an object
-            try {
-              if (typeof options !== 'object') {
-                throw {error: 'Options is not an object!'};
-              }
-              if (options === {}){
-                 throw {error: 'Options are empty'};
-              }
-            }
-            catch (err){
-              console.log(err);
-            }
+
             var that = this,
                 //Get host
                 baseUrl = that.getConn(),
@@ -474,7 +462,7 @@
                   },
                   cache: base
                 },
-                
+
                 //Set url
                 url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
