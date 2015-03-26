@@ -443,7 +443,7 @@
                 }).success(function (data) {
                   deferred.resolve(data.token);
                 });
-                
+
                 return deferred.promise;
 
           },
@@ -458,7 +458,6 @@
                 config = {
                   params: {
                     f:'json',
-                    token: options.token,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                   },
                   cache: base
@@ -510,7 +509,6 @@
                       return  $q.reject(res.data);
                     }
                   }
-
   	            }
                 else {
   	            // invalid response
@@ -549,7 +547,6 @@
       return (Server);
     }
   ]);
-
 
 
 })();
