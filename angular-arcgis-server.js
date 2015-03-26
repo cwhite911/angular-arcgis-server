@@ -455,7 +455,7 @@
                   data: $.param(reqOptions),
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).success(function (data) {
-                  deferred.resolve(data.token);
+                  deferred.resolve(data);
                 });
 
                 return deferred.promise;
