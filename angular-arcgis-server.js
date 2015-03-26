@@ -425,7 +425,7 @@
 
         //Get Access token
         requestToken: function (options){
-          exp = exp || 60;
+          
           var reqOptions = {
             request: 'getToken'
           };
