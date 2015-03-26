@@ -467,7 +467,7 @@
                 url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
 
             //Gets the base of the ArcGIS server structure
-            return $http.post(url, config).then(function(res){
+            return $http.get(url, config).then(function(res){
                 if (typeof res.data === 'object' && !res.data.error) {
                   //Concat layers and tables array
                   var _layers = res.data.layers.concat(res.data.tables);
@@ -480,7 +480,6 @@
                       layers: _layers
                     }]
                   }] : that.layers;
-
 
                   //Checks if layer option is set if not is checks action tpye
                   if (!options.layer){
