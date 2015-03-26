@@ -456,9 +456,10 @@
                 baseUrl = that.getConn(),
                 //Set config
                 config = {
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   params: {
                     f:'json',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    token: options.params.token
                   },
                   cache: base
                 },
