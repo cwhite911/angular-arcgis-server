@@ -425,12 +425,12 @@
 
         //Get Access token
         requestToken: function (options){
-          
+
           var reqOptions = {
             request: 'getToken'
           };
 
-          angular.extends(reqOptions, options);
+          angular.extend(reqOptions, options);
 
           var c = this.conn,
               url = c.protocol + '://' + c.host + '/arcgis/tokens/',
@@ -443,6 +443,7 @@
                 }).success(function (data) {
                   deferred.resolve(data.token);
                 });
+                
                 return deferred.promise;
 
           },
