@@ -330,7 +330,7 @@ Options (object)
 
 | Parameter  | Details | Type | Required | Default |
 | :------------- | ------------- | :-----------: | :-----------: | -------------- |
-| user  | Username  | *String* | true | null |
+| username  | Username  | *String* | true | null |
 | password | password | *String* | true | null |
 | expiration  | The token expiration time in minutes. The default is 60 minutes. The maximum expiration period is 15 days. | *Number* | false | 60 |
 | f | Response format | *String* | false | 'json' |
