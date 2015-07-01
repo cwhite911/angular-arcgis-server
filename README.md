@@ -322,6 +322,49 @@ testServer.utilsGeom('project', projectOptions)
 
 ```
 
+### requestToken(options)
+
+##### Returns object containing token and expiration.
+
+Options (object)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| user  | Username  | *String* | true | null |
+| password | password | *String* | true | null |
+| expiration  | The token expiration time in minutes. The default is 60 minutes. The maximum expiration period is 15 days. | *Number* | false | 60 |
+| f | Response format | *String* | false | 'json' |
+
+Additional options found at [More Options](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000m5000000)
+
+#### Example
+
+Define options
+
+```javascript
+
+//Setup options
+
+var options = {
+  username: <user>,
+  password: <password>,
+};
+
+```
+
+Make request to server
+
+```javascript
+
+//Set service
+
+testServer.requestToken(options)
+  .then(function (token) {
+    //Do something
+  });
+
+```
+
 #### Contribute
 
 Contributions are welcomed! Please just fork and submit a pull request.

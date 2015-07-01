@@ -441,7 +441,9 @@
         requestToken: function (options){
 
           var reqOptions = {
-            request: 'getToken'
+            request: 'getToken',
+            f: 'json',
+            expiration: 60
           };
 
           angular.extend(reqOptions, options);
