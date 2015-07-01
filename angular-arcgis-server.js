@@ -405,7 +405,6 @@
 	            }
               else {
 	            // invalid response
-                console.log(res.data.error);
 	               return $q.reject(res.data);
 	            }
             }, function(res){
@@ -425,12 +424,10 @@
                 }
                 else {
                   // invalid response
-                  console.log('invalide response');
                   return $q.reject(res.data);
                 }
               }, function(res){
                 //Something went wrong
-                console.log({error: 'Promise rejected - Check your options and server'});
                 return $q.reject(res.data);
               });
             });
