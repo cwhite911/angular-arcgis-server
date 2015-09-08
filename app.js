@@ -4,7 +4,7 @@ angular.module('app', ['agsserver']).
   controller('test', ['$scope', '$http', 'Ags', function($scope, $http, Ags){
     //Create new server object
 
-    var mapsServer = new Ags({host: 'maps.raleighnc.gov'});
+    var mapsServer = $scope.mapsServer = new Ags({host: 'maps.raleighnc.gov'});
 
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');
@@ -15,7 +15,7 @@ angular.module('app', ['agsserver']).
     });
 
 
-
+    console.log($scope.mapsServer);
 
     console.log(streets_ms);
     //Auto fill function for street names

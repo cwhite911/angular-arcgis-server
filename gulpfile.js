@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     karma = require('gulp-karma'),
     nodemon = require('gulp-nodemon'),
     jshint = require('gulp-jshint'),
+    concat = require('gulp-concat'),
     uglify = require('gulp-uglify');
 
 
@@ -28,20 +29,26 @@ var gulp = require('gulp'),
 
 
     gulp.task('compress', function() {
-      gulp.src('angular-arcgis-server.js')
+      gulp.src(['angular-arcgis-server.js', 'directives/longin/agsLoginForm.js'])
+      .pipe(concat('angular-arcgis-server.js'))
       .pipe(uglify())
       .pipe(gulp.dest('dist'))
     });
 
+    gulp.task('html', function() {
+      gulp.src(['directives/login/agsLoginForm.html'])
+      .pipe(gulp.dest('dist'))
+    });
+
     gulp.task('lint', function () {
-      gulp.src('angular-arcgis-server.js')
+      gulp.src(['angular-arcgis-server.js', 'directives/longin/agsLoginForm.js'])
       .pipe(jshint())
       .pipe(jshint.reporter('default'))
     });
 
     gulp.task('serve', function () {
       nodemon({ script: 'server.js', ext: 'html js'})
-      .on('change', ['lint', 'compress'])
+      .on('change', ['lint', 'compress', 'html'])
       .on('restart', function () {
         console.log('restarted!');
       });

@@ -1,9 +1,9 @@
 (function(window, document, undefined){
   'use strict';
-  var app = angular.module('agsserver', []);
+  angular.module('agsserver', ['ngCookies'])
 
 //Provides tool to convert esri json to geojson
-  app.service('geojsonTools', function(){
+  .service('geojsonTools', function(){
     return {
       //Function to created geojson features
       geoJsonFeature: function (data, type){
@@ -100,17 +100,16 @@
       }
     };
 
-  });
+  })
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  app.factory('Ags', ['$cacheFactory', '$http', '$q', 'geojsonTools',
+  .factory('Ags', ['$cacheFactory', '$http', '$q', 'geojsonTools',
     function($cacheFactory, $http, $q, geojsonTools){
 
       //Create cache factory
       var base = $cacheFactory('base');
       //PRIVATE FUNCTIONS
-
 
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,8 +122,6 @@
           if (layerName === layer.name){
             layerId = layer.id;
           }
-          // layerId = layerName === layer.name ? layer.id : layer;
-          // layerName === layer.name ? layerId = layer.id : layer;
         });
 
         return layerId;
@@ -433,7 +430,6 @@
             });
         },
 
-
         //Get Access token
         requestToken: function (options){
 
@@ -465,6 +461,5 @@
       return (Server);
     }
   ]);
-
 
 })();
