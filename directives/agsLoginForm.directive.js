@@ -1,3 +1,10 @@
+/* agsLoginForm.directive.js */
+
+/**
+* @desc Easy to use ArcGIS Token authentication form
+* @example <ags-login-form></ags-login-form>
+*/
+
 (function(){
   "use strict";
   angular
@@ -7,7 +14,7 @@
     function agsLoginForm(){
       return {
         restrict: 'E',
-        templateUrl: '/directives/login/agsLoginForm.html',
+        templateUrl: '/directives/agsLoginForm.directive.html',
         scope: {
           server: '='
         },
@@ -25,7 +32,7 @@
         $scope.server.requestToken({username: user, password: password})
           .then(function (token) {
             if (token.error){
-              $scope.loggedIn = false
+              $scope.loggedIn = false;
             }
             else {
               $cookies.put('agsToken', token);
@@ -34,13 +41,14 @@
             }
           })
           .catch(function(err){
+            console.error(err);
             $scope.errorMessage = err;
-          })
+          });
       };
     }
 
     function link(scope, element, attrs) {
-      scope.modal = $('.modal', element[0])
+      scope.modal = $('.modal', element[0]);
       scope.modal.modal({keyboard: false, backdrop: 'static'});
     }
 

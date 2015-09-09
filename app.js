@@ -1,10 +1,10 @@
 'use strict';
 // Declare app level module which depends on views, and components
 angular.module('app', ['agsserver']).
-  controller('test', ['$scope', '$http', 'Ags', function($scope, $http, Ags){
+  controller('test', ['$scope', '$http', 'agsService', function($scope, $http, agsService){
     //Create new server object
 
-    var mapsServer = $scope.mapsServer = new Ags({host: 'maps.raleighnc.gov'});
+    var mapsServer = $scope.mapsServer = new agsService({host: 'maps.raleighnc.gov'});
 
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');
@@ -22,12 +22,12 @@ angular.module('app', ['agsserver']).
 
       var streetOptions = {
         layer: 'Project Tracking',
-        geojson: false,
+        geojson: true,
         actions: 'query',
         params: {
           f: 'json',
           where: 'OBJECTID > 1',
-          returnGeometry: false,
+          returnGeometry: true,
           outSR: 4326
         }
       };
@@ -38,6 +38,26 @@ angular.module('app', ['agsserver']).
       function(err){
         console.log(err);
       });
+
+      //
+      // var streetOptions2 = {
+      //   layer: 'Project Tracking',
+      //   geojson: true,
+      //   actions: 'query',
+      //   params: {
+      //     f: 'json',
+      //     where: 'OBJECTID > 1',
+      //     returnGeometry: false,
+      //     outSR: 4326
+      //   }
+      // };
+      // streets_ms.request(streetOptions2)
+      // .then(function(data){
+      //   $scope.street = data;
+      // },
+      // function(err){
+      //   console.log(err);
+      // });
 
 
 

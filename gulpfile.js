@@ -27,21 +27,27 @@ var gulp = require('gulp'),
       });
     });
 
+    gulp.task('build', function() {
+      return gulp.src(['ags.module.js', 'services/*.js', './directives/*.js'])
+        .pipe(concat({path:'angular-arcgis-server.min.js'}))
+        .pipe(uglify())
+        .pipe(gulp.dest('dist'))
+    });
 
     gulp.task('compress', function() {
-      gulp.src(['angular-arcgis-server.js', 'directives/longin/agsLoginForm.js'])
-      .pipe(concat('angular-arcgis-server.js'))
-      .pipe(uglify())
-      .pipe(gulp.dest('dist'))
+      return gulp.src(['ags.module.js', 'services/*.js', 'directives/*.js'])
+        .pipe(concat({path:'angular-arcgis-server.js'}))
+        // .pipe(uglify())
+        .pipe(gulp.dest('dist'))
     });
 
     gulp.task('html', function() {
-      gulp.src(['directives/login/agsLoginForm.html'])
-      .pipe(gulp.dest('dist'))
+      return gulp.src(['directives/**/*.html'])
+        .pipe(gulp.dest('dist'))
     });
 
     gulp.task('lint', function () {
-      gulp.src(['angular-arcgis-server.js', 'directives/longin/agsLoginForm.js'])
+      gulp.src(['ags.module.js', 'services/*.js', 'directives/*.js'])
       .pipe(jshint())
       .pipe(jshint.reporter('default'))
     });
