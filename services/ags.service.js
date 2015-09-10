@@ -67,192 +67,231 @@
         return this;
       };
 
-    //Resets connection properties of server
-    Server.prototype.resetConn = function(connection){
-      angular.extend(this.conn, connection).call(Server);
-      return this;
-    };
+      /**
+      *@type method
+      *@name resetConn
+      *@desc Resets connection properties of Server instances
+      *@param {Object} options, contains configuration settings
+      *@returns {Object} Server
+      */
 
-    //Checks if host is set and return connection string, if host is not set return error message to console
-    Server.prototype.getConn = function() {
-      var c = this.conn;
-      return c.protocol + '://' + c.host + c.path;
-    };
-
-    /**
-    *@Desc
-    *
-    *
-    */
-
-    Server.prototype.setService = function (options) {
-      checkOptions(options);
-      var baseUrl = this.getConn(),
-      url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-      var newService = new Server(this.conn);
-      newService.serviceUrl = url;
-      return newService;
-    };
-
-    //Sets actions options for request
-    Server.prototype.setRequst = function(url, layerId, options){
-      var req;
-      // Request parameters
-      if (options.actions){
-        actions.forEach(function(action){
-          if (action.type === options.actions){
-            req = {
-              method: action.method,
-              url: layerId || layerId === 0 ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
-              headers: options.headers || {'Content-Type': 'text/plain'},
-              params: options.params || {},
-              timeout: options.timeout || 5000
-            };
-            if (action.method === 'POST'){
-              req.params.features = JSON.stringify(req.params.features);
-            }
-          }
-        });
-      }
-      else {
-        req = {
-          method: 'GET',
-          url: layerId || layerId === 0 ? url + '/' + layerId : url,
-          headers: options.headers || {'Content-Type': 'text/plain'},
-          params: options.params || {f: 'json'},
-          timeout: options.timeout || 5000
-        };
-      }
-
-      return req;
-    };
-
-    //Get Access token
-    Server.prototype.requestToken = function(options){
-      var reqOptions, conn, deferred, url;
-      deferred = $q.defer();
-      conn = this.conn;
-      url = c.protocol + '://' + c.host + '/arcgis/tokens/';
-      reqOptions = {
-        request: 'getToken',
-        f: 'json',
-        expiration: 60
+      Server.prototype.resetConn = function(connection){
+        angular.extend(this.conn, connection);
+        return this;
       };
-      angular.extend(reqOptions, options);
 
-            $http({
-              method: 'POST',
-              url: url,
-              data: $.param(reqOptions),
-              headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      /**
+      *@type method
+      *@name getConn
+      *@desc Checks if host is set
+      *@param {Object} options, contains configuration settings
+      *@returns {string} connection uri
+      */
+
+      Server.prototype.getConn = function() {
+        var c = this.conn;
+        return c.protocol + '://' + c.host + c.path;
+      };
+
+      /**
+      *@type method
+      *@name setService
+      *@desc Creates an new instances of a Server object pedefined with a service
+      *@param {Object} options, contains configuration settings
+      *@returns {Object} Server
+      */
+
+      Server.prototype.setService = function (options) {
+        checkOptions(options);
+        var baseUrl = this.getConn(),
+        url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+        var newService = new Server(this.conn);
+        newService.serviceUrl = url;
+        return newService;
+      };
+
+      /**
+      *@type method
+      *@name setRequst
+      *@desc Sets actions options for request
+      *@param {string} The services base url
+      *@param {number} The layer id
+      *@param {Object} options, contains configuration settings
+      *@returns {Object} Updated request options
+      */
+
+      Server.prototype.setRequst = function(url, layerId, options){
+        var req;
+        // Request parameters
+        if (options.actions){
+          actions.forEach(function(action){
+            if (action.type === options.actions){
+              req = {
+                method: action.method,
+                url: layerId || layerId === 0 ? url + '/' + layerId + '/' + action.type : url + '/' + action.type,
+                headers: options.headers || {'Content-Type': 'text/plain'},
+                params: options.params || {},
+                timeout: options.timeout || 5000
+              };
+              if (action.method === 'POST'){
+                req.params.features = JSON.stringify(req.params.features);
+              }
+            }
+          });
+        }
+        else {
+          req = {
+            method: 'GET',
+            url: layerId || layerId === 0 ? url + '/' + layerId : url,
+            headers: options.headers || {'Content-Type': 'text/plain'},
+            params: options.params || {f: 'json'},
+            timeout: options.timeout || 5000
+          };
+        }
+
+        return req;
+      };
+
+      /**
+      *@type method
+      *@name requestToken
+      *@desc Get Access token from ArcGIS Server
+      *@param {Object} options, contains configuration settings
+      *@returns {HttpPromise} Future object
+      */
+
+      Server.prototype.requestToken = function(options){
+        var reqOptions, conn, deferred, url;
+        deferred = $q.defer();
+        conn = this.conn;
+        url = c.protocol + '://' + c.host + '/arcgis/tokens/';
+        reqOptions = {
+          request: 'getToken',
+          f: 'json',
+          expiration: 60
+        };
+        angular.extend(reqOptions, options);
+
+              $http({
+                method: 'POST',
+                url: url,
+                data: $.param(reqOptions),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+              })
+              .success(function (data) {
+                deferred.resolve(data);
+              })
+              .catch(function(err){
+                deferred.reject(err);
+              });
+
+              return deferred.promise;
+        };
+
+      /**
+      *@type method
+      *@name request
+      *@desc Sends requests to ArcGIS Server
+      *@param {Object} options, contains configuration settings
+      *@returns {HttpPromise} Future object
+      */
+
+      Server.prototype.request = function(options){
+        var that, config, baseUrl, url, deferred;
+        that = this;
+        deferred = $q.defer();
+        options = checkOptions(options);
+        baseUrl = that.getConn();
+        config = setParams(options);
+        url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
+
+        //Gets the base of the ArcGIS server structure
+        $http.get(url, config)
+          .then(setRequestLayer)
+          .then(function(layerId){
+              // Request parameters
+              var req = that.setRequst(url, layerId, options);
+              //Make request to server and return promise
+              return $http(req);
             })
-            .success(function (data) {
-              deferred.resolve(data);
+            .then(configureReturn)
+            .then(function(res){
+              deferred.resolve(res);
             })
             .catch(function(err){
               deferred.reject(err);
             });
 
+          return deferred.promise;
+
+          function setRequestLayer (res){
+            var _layers, layerId, deferred;
+            var isInteger = Number.isInteger || function(value) {
+              return typeof value === "number" &&
+                     isFinite(value) &&
+                     Math.floor(value) === value;
+            };
+            deferred = $q.defer();
+            if (res.data.error) { deferred.reject(res.data);}
+            else{
+              //Concat layers and tables array
+               _layers = res.data.layers.concat(res.data.tables);
+              //set layers if layer has not been set
+              that.layers = that.layers.length === 0 ? [{
+                folder: options.folder,
+                service: [{
+                  name: options.service,
+                  server: options.server,
+                  layers: _layers
+                }]
+              }] : that.layers;
+
+
+              //Checks if layer option is set if not is checks action tpye
+              if (!options.layer){
+                switch (options.actions){
+                  case 'find':
+                  case 'identify':
+                  case 'export':
+                    if (options.params.layers){
+                      options.params.layers = getLayerIdList(_layers, options.params.layers);
+                    }
+                    break;
+                  default:
+                    return;
+                }
+              }
+              //If layer option is set returns layer id
+              else {
+                //Gets the layer id for requested layer
+                layerId = getLayerId(_layers, options.layer);
+                //Checks if layerId is a number and returns it else it rejects the promise
+                if(isInteger(layerId)){
+                  deferred.resolve(layerId);
+                }else{
+                  deferred.reject(res.data);
+                }
+              }
+
+            }
             return deferred.promise;
-      };
+          }
 
-    //Method that gets data about the server
-    Server.prototype.request = function(options){
-      var that, config, baseUrl, url, deferred;
-      that = this;
-      deferred = $q.defer();
-      options = checkOptions(options);
-      baseUrl = that.getConn();
-      config = setParams(options);
-      url = this.serviceUrl || baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
-
-      //Gets the base of the ArcGIS server structure
-      $http.get(url, config)
-        .then(setRequestLayer)
-        .then(function(layerId){
-            // Request parameters
-            var req = that.setRequst(url, layerId, options);
-            //Make request to server and return promise
-            return $http(req);
-          })
-          .then(configureReturn)
-          .then(function(res){
-            deferred.resolve(res);
-          })
-          .catch(function(err){
-            deferred.reject(err);
-          });
-
-        return deferred.promise;
-
-        function setRequestLayer (res){
-          var _layers, layerId, deferred;
-          var isInteger = Number.isInteger || function(value) {
-            return typeof value === "number" &&
-                   isFinite(value) &&
-                   Math.floor(value) === value;
-          };
-          deferred = $q.defer();
-          if (res.data.error) { deferred.reject(res.data);}
-          else{
-            //Concat layers and tables array
-             _layers = res.data.layers.concat(res.data.tables);
-            //set layers if layer has not been set
-            that.layers = that.layers.length === 0 ? [{
-              folder: options.folder,
-              service: [{
-                name: options.service,
-                server: options.server,
-                layers: _layers
-              }]
-            }] : that.layers;
-
-
-            //Checks if layer option is set if not is checks action tpye
-            if (!options.layer){
-              switch (options.actions){
-                case 'find':
-                case 'identify':
-                case 'export':
-                  if (options.params.layers){
-                    options.params.layers = getLayerIdList(_layers, options.params.layers);
-                  }
-                  break;
-                default:
-                  return;
+          function configureReturn (res){
+            var deferred = $q.defer();
+            if (typeof res.data === 'object') {
+              if (options.geojson === true){
+                return geojsonService.toGeojson(res.data);
               }
+              deferred.resolve(res.data);
             }
-            //If layer option is set returns layer id
             else {
-              //Gets the layer id for requested layer
-              layerId = getLayerId(_layers, options.layer);
-              //Checks if layerId is a number and returns it else it rejects the promise
-              if(isInteger(layerId)){
-                deferred.resolve(layerId);
-              }else{
-                deferred.reject(res.data);
-              }
+              deferred.reject(res.data);
             }
-
+            return deferred.promise;
           }
-          return deferred.promise;
-        }
 
-        function configureReturn (res){
-          var deferred = $q.defer();
-          if (typeof res.data === 'object') {
-            if (options.geojson === true){
-              return geojsonService.toGeojson(res.data);
-            }
-            deferred.resolve(res.data);
-          }
-          else {
-            deferred.reject(res.data);
-          }
-          return deferred.promise;
-        }
-
-    };
+      };
 
 
 
