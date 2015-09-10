@@ -31,7 +31,7 @@ Inject module and add factory to controller
 ```javascript
 
 angular.module('app', ['agsserver']).
-controller('test', [ 'Ags', function(Ags){}]);
+controller('test', [ 'AgsService', function(AgsService){}]);
 
 ```
 
@@ -39,7 +39,7 @@ controller('test', [ 'Ags', function(Ags){}]);
 
 ### Create server
 
-#### Ags(options)
+#### AgsService(options)
 
 ##### Returns new server object
 
@@ -59,7 +59,7 @@ Create ArcGIS server object
 
 //Create new server object
 
-var testServer = new Ags({'host': <Your Host> });
+var testServer = new AgsService({'host': <Your Host> });
 
 ```
 
@@ -270,7 +270,7 @@ myFeatureService.request(options)
 
 
 
-#### utilsGeom(type, options)
+#### (type, options)
 
 ##### Makes request to ArcGIS server geometry utilities, takes a single options object as parameter.
 
@@ -314,7 +314,7 @@ var projectOptions = {
 };
 
 //Make request
-testServer.utilsGeom('project', projectOptions)
+testServer.('project', projectOptions)
 .then(function(data){
   //Do something
 });
