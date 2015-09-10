@@ -14,7 +14,7 @@
   "use strict";
   angular
     .module('agsserver')
-    .factory('agsService', agsService);
+    .factory('AgsService', agsService);
 
     agsService.$inject = ['$cacheFactory', '$http', '$q', 'geojsonService'];
 
@@ -61,6 +61,14 @@
           method: 'GET',
         }
       ];
+
+      /**
+      *@type Constructor
+      *@name Server
+      *@desc Server Constructor Class
+      *@param {Object} options, contains configuration settings
+      *@returns {Object} Server
+      */
 
       Server = function (conn){
         this.conn = {
@@ -169,7 +177,7 @@
         var reqOptions, conn, deferred, url;
         deferred = $q.defer();
         conn = this.conn;
-        url = c.protocol + '://' + c.host + '/arcgis/tokens/';
+        url = conn.protocol + '://' + conn.host + '/arcgis/tokens/';
         reqOptions = {
           request: 'getToken',
           f: 'json',
@@ -191,7 +199,7 @@
               });
 
               return deferred.promise;
-        };
+      };
 
       /**
       *@type method
@@ -399,17 +407,26 @@
       };
       return service;
 
+      /**
+      *@type function
+      *@name geojsonFeature
+      *@desc Creates geojson feature
+      *@param {Object} data, geometry and attribute data from ESRI JSON
+      *@param {string} geometry type
+      *@returns {Object} Geojson feature
+      */
       //Function to created geojson features
       function geojsonFeature(data, type){
-          //Basic geojson feature structure
-          var feature = {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": type,
-              "coordinates": []
-            }
-          };
+
+        var feature = {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": type,
+            "coordinates": []
+          }
+        };
+        try {
           switch (type){
             case 'Point':
               feature.geometry.coordinates = [data.geometry.x, data.geometry.y];
@@ -421,13 +438,19 @@
               feature.geometry.coordinates = data.geometry.rings;
               break;
             default:
-              console.error('Improper geometry type:', type);
-              return;
+              throw new Error('Improper geometry type:', type);
           }
           //Add attribute data to feature
           feature.properties = data.attributes;
           return feature;
         }
+        catch (err){
+          console.error(err);
+        }
+        finally{
+          return feature;
+        }
+      }
 
         //Returns ArcGIS Server returned json as geojson
         //Parameters- data is the returned data from ArcGIS server
@@ -448,7 +471,7 @@
                 features = data.results;
               }
               else {
-                throw {error: 'Please set params outSR to 4326'};
+                throw new Error('Please set params outSR to 4326');
               }
               //Loop through each feature from esri response
               for (var _i = 0,  _len = features.length; _i < _len; _i++){
@@ -464,7 +487,7 @@
                     geojson.features.push(geojsonFeature(feature, 'Polygon'));
                     break;
                   default:
-                    console.error('Esri geometry type not recognized, failed geojson conversion:', data.geometryType || feature.geometryType);
+                    throw new Error('Esri geometry type not recognized, failed geojson conversion:', data.geometryType || feature.geometryType);
 
                   }
                 }
@@ -478,7 +501,7 @@
             }
           }
 
-          
+
 })();
 
 /* agsFeatureForm.directive.js */

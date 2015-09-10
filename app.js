@@ -1,10 +1,10 @@
 'use strict';
 // Declare app level module which depends on views, and components
 angular.module('app', ['agsserver']).
-  controller('test', ['$scope', '$http', 'agsService', function($scope, $http, agsService){
+  controller('test', ['$scope', '$http', 'AgsService', function($scope, $http, AgsService){
     //Create new server object
 
-    var mapsServer = $scope.mapsServer = new agsService({host: 'maps.raleighnc.gov'});
+    var mapsServer = $scope.mapsServer = new AgsService({host: 'maps.raleighnc.gov'});
 
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');

@@ -9,7 +9,7 @@
   "use strict";
   angular
     .module('agsserver')
-    .factory('agsService', agsService);
+    .factory('AgsService', agsService);
 
     agsService.$inject = ['$cacheFactory', '$http', '$q', 'geojsonService'];
 
@@ -56,6 +56,14 @@
           method: 'GET',
         }
       ];
+
+      /**
+      *@type Constructor
+      *@name Server
+      *@desc Server Constructor Class
+      *@param {Object} options, contains configuration settings
+      *@returns {Object} Server
+      */
 
       Server = function (conn){
         this.conn = {
@@ -164,7 +172,7 @@
         var reqOptions, conn, deferred, url;
         deferred = $q.defer();
         conn = this.conn;
-        url = c.protocol + '://' + c.host + '/arcgis/tokens/';
+        url = conn.protocol + '://' + conn.host + '/arcgis/tokens/';
         reqOptions = {
           request: 'getToken',
           f: 'json',
@@ -186,7 +194,7 @@
               });
 
               return deferred.promise;
-        };
+      };
 
       /**
       *@type method
