@@ -372,7 +372,7 @@ Thanks!
 
 ## Build & development
 
-Run `gulp` for building and `gulp serve` for preview.
+Run `gulp` for preview and `gulp build` for build.
 
 ## Testing
 

@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    karma = require('gulp-karma'),
+    Server = require('karma').Server,
     nodemon = require('gulp-nodemon'),
     jshint = require('gulp-jshint'),
     concat = require('gulp-concat'),
@@ -19,7 +19,7 @@ var gulp = require('gulp'),
 
 
     gulp.task('build', function() {
-      return gulp.src(['ags.module.js', 'services/*.js', './directives/*.js'])
+      return gulp.src(['ags.module.js', 'services/*.service.js', './directives/*.directive.js'])
         .pipe(concat({path:'angular-arcgis-server.min.js'}))
         .pipe(uglify())
         .pipe(gulp.dest('dist'))
@@ -51,12 +51,18 @@ var gulp = require('gulp'),
       });
     });
 
-    gulp.task('test', function() {
-      gulp.src(testFiles)
-      .pipe(jshint())
-      .pipe(jshint.reporter('jshint-stylish'))
-      .pipe(karma({
-        configFile: 'karma.conf.js',
-        action: 'watch'
-      }));
+    gulp.task('test', function (done) {
+      new Server({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+      }, done).start();
     });
+    // gulp.task('test', function() {
+    //   gulp.src(testFiles)
+    //   .pipe(jshint())
+    //   .pipe(jshint.reporter('jshint-stylish'))
+    //   .pipe(karma({
+    //     configFile: 'karma.conf.js',
+    //     action: 'watch'
+    //   }));
+    // });
