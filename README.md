@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cwhite911/angular-arcgis-server.svg)](https://travis-ci.org/cwhite911/angular-arcgis-server)
+
 angular-arcgis-server
 ======================================
 

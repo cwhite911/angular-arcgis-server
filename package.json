@@ -4,7 +4,7 @@
   "description": "Test environment for angular-arcgis-server module",
   "main": "server.js",
   "scripts": {
-    "test": "test",
+    "test": "./node_modules/.bin/karma start --single-run",
     "start": "node server.js"
   },
   "repository": {
