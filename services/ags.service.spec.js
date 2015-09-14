@@ -46,7 +46,78 @@
       expect(testServer.resetConn({protocol: 'https', host: 'gis.newserver.org'}).getConn()).toBe('https://gis.newserver.org/arcgis/rest/services');
     });
 
-    
+    it('should set a service as a new Server Object', function(){
+      var testServer = new AgsService({host: 'maps.raleighnc.gov'});
+      var opendata_ms = testServer.setService({
+        folder:'Services',
+        service: 'OpenData',
+        server: 'MapServer'
+      });
+
+      var instance = opendata_ms instanceof AgsService;
+      var serviceUrl = opendata_ms.serviceUrl;
+
+      expect(instance).toBe(true);
+      expect(serviceUrl).toBe('http://maps.raleighnc.gov/arcgis/rest/services/Services/OpenData/MapServer');
+    });
+
+    it('should make request using a layer name that returns esri json', function(){
+      var testServer = new AgsService({host: 'maps.raleighnc.gov'});
+      var opendata_ms = testServer.setService({
+        folder:'Services',
+        service: 'OpenData',
+        server: 'MapServer'
+      });
+
+      var options = {
+        layer: 'Red Light Cameras',
+        geojson: false,
+        actions: 'query',
+        params: {
+          f: 'json',
+          where: '1=1',
+          returnGeometry: true,
+          outSR: 4326
+        }
+      };
+
+      opendata_ms.request(options).then(function(res){
+        return Object.keys(res);
+      })
+      .then(function(features){
+        expect(features).toBe(['displayFieldName', 'fieldAliases', 'geometryType', 'spatialReference', 'fields', 'features']);
+      });
+
+    });
+
+    it('should make request using a layer name that returns geojson', function(){
+      var testServer = new AgsService({host: 'maps.raleighnc.gov'});
+      var opendata_ms = testServer.setService({
+        folder:'Services',
+        service: 'OpenData',
+        server: 'MapServer'
+      });
+
+      var options = {
+        layer: 'Red Light Cameras',
+        geojson: true,
+        actions: 'query',
+        params: {
+          f: 'json',
+          where: '1=1',
+          returnGeometry: true,
+          outSR: 4326
+        }
+      };
+
+      opendata_ms.request(options).then(function(res){
+        return Object.keys(res);
+      })
+      .then(function(features){
+        expect(features).toBe(['displayFieldName', 'fieldAliases', 'geometryType', 'spatialReference', 'fields', 'features']);
+      });
+
+    });
 
   });
 

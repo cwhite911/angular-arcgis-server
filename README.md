@@ -425,7 +425,7 @@ Options (object)
 
 ![alt tag](https://raw.github.com/cwhite911/angular-arcgis-server/master/images/basicLogIn.png)
 
-##### Bootstrap Version
+##### Bootstrap Version (Modal)
 
 ![alt tag](https://raw.github.com/cwhite911/angular-arcgis-server/master/images/bsLogIn.png)
 
