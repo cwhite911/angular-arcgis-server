@@ -37,7 +37,9 @@
             else {
               $cookies.put('agsToken', token);
               $scope.loggedIn = true;
-              $scope.modal.modal('hide');
+              if (checkBootstrap($scope.modal)){
+                $scope.modal.modal('hide');
+              }
             }
           })
           .catch(function(err){
@@ -49,7 +51,18 @@
 
     function link(scope, element, attrs) {
       scope.modal = $('.modal', element[0]);
-      scope.modal.modal({keyboard: false, backdrop: 'static'});
+      if (checkBootstrap(scope.modal)){
+        scope.modal.modal({keyboard: false, backdrop: 'static'});
+      }
+    }
+
+    function checkBootstrap(modal){
+      if (typeof modal.modal === 'function'){
+        return true;
+      }
+      else {
+        return false;
+      }
     }
 
 

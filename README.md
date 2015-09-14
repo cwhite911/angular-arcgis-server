@@ -361,7 +361,7 @@ testServer.('project', projectOptions)
 
 ```
 
-### requestToken(options)
+#### requestToken(options)
 
 ##### Returns object containing token and expiration.
 
@@ -403,6 +403,31 @@ testServer.requestToken(options)
   });
 
 ```
+
+### Directives
+
+#### agsLoginForm
+
+```html
+
+<ags-login-form server=""></ags-login-form>
+
+```
+
+Options (object)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| server  | Server Object  | *Object* | true | null |
+
+
+##### Basic Version
+
+![alt tag](https://raw.github.com/cwhite911/angular-arcgis-server/master/images/basicLogIn.png)
+
+##### Bootstrap Version
+
+![alt tag](https://raw.github.com/cwhite911/angular-arcgis-server/master/images/bsLogIn.png)
 
 #### Contribute
 
