@@ -61,12 +61,49 @@ Create ArcGIS server object
 
 //Create new server object
 
-var testServer = new AgsService({'host': <Your Host> });
+var testServer = new AgsService({'protocol': <string>, 'host': <string>, 'path': <string> });
 
 ```
 
 
 ### Methods
+
+#### getConn()
+
+##### Returns a Server connection url.
+
+#### Example
+
+Get connection url
+
+```javascript
+
+testServer.getConn();
+
+```
+
+#### resetConn(options)
+
+##### Return Server object with new connection parameters
+
+Options (object)
+
+| Parameter  | Details | Type | Required | Default |
+| :------------- | ------------- | :-----------: | :-----------: | -------------- |
+| host   | Host where server is located | *String* | true | null |
+| protocol  | Protocol to be used  | *String* | false | 'http' |
+| path | Path to server | *String* | false | '/arcgis/rest/services' |
+
+#### Example
+
+Reset connection parameters
+
+```javascript
+
+testServer.resetConn({'protocol': <string>, 'host': <string>, 'path': <string> });
+
+```
+
 
 #### setService(options)
 
