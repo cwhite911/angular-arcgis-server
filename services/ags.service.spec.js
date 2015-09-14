@@ -36,6 +36,18 @@
       expect(testServer.conn.host).toBe(defaults.host);
     });
 
+    it('should get the server connection url', function(){
+      var testServer = new AgsService({host: 'maps.raleighnc.gov'});
+      expect(testServer.getConn()).toBe('http://maps.raleighnc.gov/arcgis/rest/services');
+    });
+
+    it('should reset the server connection object and return the connection string', function(){
+      var testServer = new AgsService({host: 'maps.raleighnc.gov'});
+      expect(testServer.resetConn({protocol: 'https', host: 'gis.newserver.org'}).getConn()).toBe('https://gis.newserver.org/arcgis/rest/services');
+    });
+
+    
+
   });
 
 })();
