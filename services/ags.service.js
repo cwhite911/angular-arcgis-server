@@ -301,7 +301,69 @@
 
       };
 
+      /**
+      *@type method
+      *@name getLayerId
+      *@desc Take a layers name and returns its layer id
+      *@param {String} name of service layer
+      *@returns {HttpPromise} Future object
+      */
 
+      Server.prototype.getLayerId = function(layername){
+        var layers = this.layers;
+        var deferred = $q.defer();
+
+        if (Array.isArray(layers) && layers.length > 0){
+          var filtered = layers[0].service[0].layers.filter(filterId);
+          if (filtered.length === 1){
+            deferred.resolve(filtered[0]);
+          }
+          else{
+            deferred.reject('Layer Id not found');
+          }
+        }
+        else{
+          deferred.reject('No layers set in services');
+        }
+        return deferred.promise;
+
+        function filterId(id){
+          return id.name === layername;
+        }
+      };
+
+      /**
+      *@type method
+      *@name getLayerDetails
+      *@desc Take a layers name and returns details from server as json
+      *@param {String} name of service layer
+      *@returns {HttpPromise} Future object
+      */
+
+      Server.prototype.getLayerDetails = function(layername){
+        var layers = this.layers,
+          uri = this.serviceUrl,
+          deferred = $q.defer();
+
+          this.getLayerId(layername)
+            .then(function(layerid){
+              return(uri + '/' + layerid.id + '?f=json');
+            })
+            .then(getJson)
+            .then(function(res){
+              deferred.resolve(res);
+            })
+            .catch(function(err){
+              deferred.reject(err);
+          });
+
+        return deferred.promise;
+
+        function getJson(url){
+          return $http.get(url);
+        }
+
+      };
 
       return (Server);
 

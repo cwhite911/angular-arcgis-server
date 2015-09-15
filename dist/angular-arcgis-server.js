@@ -306,7 +306,69 @@
 
       };
 
+      /**
+      *@type method
+      *@name getLayerId
+      *@desc Take a layers name and returns its layer id
+      *@param {String} name of service layer
+      *@returns {HttpPromise} Future object
+      */
 
+      Server.prototype.getLayerId = function(layername){
+        var layers = this.layers;
+        var deferred = $q.defer();
+
+        if (Array.isArray(layers) && layers.length > 0){
+          var filtered = layers[0].service[0].layers.filter(filterId);
+          if (filtered.length === 1){
+            deferred.resolve(filtered[0]);
+          }
+          else{
+            deferred.reject('Layer Id not found');
+          }
+        }
+        else{
+          deferred.reject('No layers set in services');
+        }
+        return deferred.promise;
+
+        function filterId(id){
+          return id.name === layername;
+        }
+      };
+
+      /**
+      *@type method
+      *@name getLayerDetails
+      *@desc Take a layers name and returns details from server as json
+      *@param {String} name of service layer
+      *@returns {HttpPromise} Future object
+      */
+
+      Server.prototype.getLayerDetails = function(layername){
+        var layers = this.layers,
+          uri = this.serviceUrl,
+          deferred = $q.defer();
+
+          this.getLayerId(layername)
+            .then(function(layerid){
+              return(uri + '/' + layerid.id + '?f=json');
+            })
+            .then(getJson)
+            .then(function(res){
+              deferred.resolve(res);
+            })
+            .catch(function(err){
+              deferred.reject(err);
+          });
+
+        return deferred.promise;
+
+        function getJson(url){
+          return $http.get(url);
+        }
+
+      };
 
       return (Server);
 
@@ -534,7 +596,7 @@
       };
     }
 
-    function controller($scope, $cookies, $timeout, AgsService){
+    function controller($scope, $cookies, $timeout, $q, AgsService){
       var token,
           service = $scope.service,
           layername = $scope.layername,
@@ -545,9 +607,17 @@
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
 
 
-      //Checks 
+      //Checks
       $timeout(function(){
-        checkAttr(service, layername);
+        checkAttr(service, layername)
+          .then(service.getLayerDetails.bind(service))
+          .then(function(layerDetails){
+            $scope.fields = layerDetails.data.fields;
+          })
+          .catch(function(err){
+            console.error(err);
+          });
+
       }, 250);
 
       //submits form to server
@@ -602,22 +672,29 @@
 
       //check directive attributes
       function checkAttr(service, layer){
+        var deferred = $q.defer();
         try{
           if (!service instanceof AgsService){
             throw new Error('Service is not instanceof of AgsService');
           }
-          if (!service.serviceUrl){
+          else if (!service.serviceUrl){
             throw new Error('Service is not set...please use setService() to define service');
           }
-          if (!layer){
+          else if (!layer){
             throw new Error('Layername is not defined in directive');
           }
-          if (!layerExist(service,layer)){
+          else if (!layerExist(service,layer)){
             throw new Error('Layername does not exist');
+          }
+          else{
+            deferred.resolve(layer);
           }
         }
         catch(err){
-          console.error(err);
+          deferred.reject(err);
+        }
+        finally{
+          return deferred.promise;
         }
       }
 
@@ -629,6 +706,7 @@
           return (item.id === layer || item.name === layer);
         }
       }
+
 
       //Checks request options
       function checkOptions(options){
@@ -689,7 +767,6 @@
     }
 
     function controller($scope, $cookies){
-      $scope.token = '';
       $scope.loggedIn = true;
       $scope.errorMessage = false;
 

@@ -24,7 +24,6 @@
     }
 
     function controller($scope, $cookies){
-      $scope.token = '';
       $scope.loggedIn = true;
       $scope.errorMessage = false;
 
