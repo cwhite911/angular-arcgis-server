@@ -11,9 +11,9 @@
     .module('agsserver')
     .factory('AgsService', agsService);
 
-    agsService.$inject = ['$cacheFactory', '$http', '$q', 'geojsonService'];
+    agsService.$inject = ['$cacheFactory', '$http', '$q', '$cookies', 'geojsonService'];
 
-    function agsService($cacheFactory, $http, $q, geojsonService){
+    function agsService($cacheFactory, $http, $q, $cookies, geojsonService){
       var Server, base, actions;
 
       base = $cacheFactory('base');
@@ -194,6 +194,38 @@
               });
 
               return deferred.promise;
+      };
+
+      /**
+      *@type method
+      *@name isTokenValid
+      *@desc Check if token is currently valid
+      *@returns {Boolean}
+      */
+
+      Server.prototype.isTokenValid = function(){
+        var d, time, token, expires;
+        token = $cookies.get('agsToken');
+        expires = $cookies.get('agsExpires');
+
+        try {
+          expires = new Date(expires);
+          time = Date.now();
+
+          if (!token){
+            throw new Error('Token does not exist');
+          }
+          else if (time > expires){
+            throw new Error('Token is expired');
+          }
+          else{
+            return true;
+          }
+        }
+        catch (err){
+          console.error(err);
+          return false;
+        }
       };
 
       /**

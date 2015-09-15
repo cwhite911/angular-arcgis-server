@@ -39,7 +39,7 @@
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
 
 
-      //Checks
+      //Checks inputs
       $timeout(function(){
         checkAttr(service, layername)
           .then(service.getLayerDetails.bind(service))

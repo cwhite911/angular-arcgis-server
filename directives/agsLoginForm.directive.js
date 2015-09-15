@@ -23,9 +23,22 @@
       };
     }
 
-    function controller($scope, $cookies){
+    function controller($scope, $cookies, $interval){
       $scope.loggedIn = true;
       $scope.errorMessage = false;
+
+      //Checks if token is valid
+      $interval(function(){
+        if (checkBootstrap($scope.modal) && $scope.server.isTokenValid()){
+          $scope.modal.modal('hide');
+        }
+        else if(checkBootstrap($scope.modal) && !$scope.server.isTokenValid()){
+          $scope.modal.modal('show');
+        }
+        else {
+          $scope.errorMessage = true;
+        }
+      }, 1000);
 
       $scope.login = function (user, password) {
         $scope.server.requestToken({username: user, password: password})
@@ -34,7 +47,8 @@
               $scope.loggedIn = false;
             }
             else {
-              $cookies.put('agsToken', token);
+              $cookies.put('agsToken', token.token);
+              $cookies.put('agsExpires', token.expires);
               $scope.loggedIn = true;
               if (checkBootstrap($scope.modal)){
                 $scope.modal.modal('hide');

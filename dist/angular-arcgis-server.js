@@ -16,9 +16,9 @@
     .module('agsserver')
     .factory('AgsService', agsService);
 
-    agsService.$inject = ['$cacheFactory', '$http', '$q', 'geojsonService'];
+    agsService.$inject = ['$cacheFactory', '$http', '$q', '$cookies', 'geojsonService'];
 
-    function agsService($cacheFactory, $http, $q, geojsonService){
+    function agsService($cacheFactory, $http, $q, $cookies, geojsonService){
       var Server, base, actions;
 
       base = $cacheFactory('base');
@@ -199,6 +199,38 @@
               });
 
               return deferred.promise;
+      };
+
+      /**
+      *@type method
+      *@name isTokenValid
+      *@desc Check if token is currently valid
+      *@returns {Boolean}
+      */
+
+      Server.prototype.isTokenValid = function(){
+        var d, time, token, expires;
+        token = $cookies.get('agsToken');
+        expires = $cookies.get('agsExpires');
+
+        try {
+          expires = new Date(expires);
+          time = Date.now();
+
+          if (!token){
+            throw new Error('Token does not exist');
+          }
+          else if (time > expires){
+            throw new Error('Token is expired');
+          }
+          else{
+            return true;
+          }
+        }
+        catch (err){
+          console.error(err);
+          return false;
+        }
       };
 
       /**
@@ -607,7 +639,7 @@
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
 
 
-      //Checks
+      //Checks inputs
       $timeout(function(){
         checkAttr(service, layername)
           .then(service.getLayerDetails.bind(service))
@@ -766,9 +798,22 @@
       };
     }
 
-    function controller($scope, $cookies){
+    function controller($scope, $cookies, $interval){
       $scope.loggedIn = true;
       $scope.errorMessage = false;
+
+      //Checks if token is valid
+      $interval(function(){
+        if (checkBootstrap($scope.modal) && $scope.server.isTokenValid()){
+          $scope.modal.modal('hide');
+        }
+        else if(checkBootstrap($scope.modal) && !$scope.server.isTokenValid()){
+          $scope.modal.modal('show');
+        }
+        else {
+          $scope.errorMessage = true;
+        }
+      }, 1000);
 
       $scope.login = function (user, password) {
         $scope.server.requestToken({username: user, password: password})
@@ -777,7 +822,8 @@
               $scope.loggedIn = false;
             }
             else {
-              $cookies.put('agsToken', token);
+              $cookies.put('agsToken', token.token);
+              $cookies.put('agsExpires', token.expires);
               $scope.loggedIn = true;
               if (checkBootstrap($scope.modal)){
                 $scope.modal.modal('hide');
