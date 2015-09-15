@@ -29,13 +29,17 @@
 
     function controller($scope, $cookies){
       var token,
+          service = scope.service,
+          layer = scope.layer,
           //Set defaults
           errorMessage = $scope.errorMessage = false,
           map = $scope.map = $scope.map === false ? $scope.map : true,
           auth = $scope.auth = $scope.auth === true ? $scope.auth : false,
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
-      //Checks
 
+      //Checks
+      checkAttr(service, layer);
+      
       //submits form to server
       $scope.submit = function (formData) {
         var options = {
@@ -84,6 +88,24 @@
           console.error(err);
         }
 
+      }
+
+      //check directive attributes
+      function checkAttr(service, layer){
+        try{
+          if (service instanceof AgsService){
+            throw new Error({error: 'Service is not instanceof of AgsService'});
+          }
+          if (!service.serviceUrl){
+            throw new Error({error: 'Service is not set...please use setService() to define service', serviceUrl: service.serviceUrl});
+          }
+          if (!layer){
+            throw new Error({error: 'Layer is not defined', layer: layer});
+          }
+        }
+        catch(err){
+          console.error(err);
+        }
       }
 
       //Checks request options
