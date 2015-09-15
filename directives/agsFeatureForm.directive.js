@@ -17,33 +17,37 @@
         templateUrl: '/directives/agsFeatureForm.directive.html',
         scope: {
           service: '=', //required
-          layer: '=', //required
+          layername: '@', //required
           auth: '=',
           map: '=',
-          geojson: '='
+          geojson: '=',
+          config: '='
         },
         controller: controller,
         link: link
       };
     }
 
-    function controller($scope, $cookies){
+    function controller($scope, $cookies, $timeout, AgsService){
       var token,
-          service = scope.service,
-          layer = scope.layer,
+          service = $scope.service,
+          layername = $scope.layername,
           //Set defaults
           errorMessage = $scope.errorMessage = false,
           map = $scope.map = $scope.map === false ? $scope.map : true,
           auth = $scope.auth = $scope.auth === true ? $scope.auth : false,
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
 
-      //Checks
-      checkAttr(service, layer);
-      
+
+      //Checks 
+      $timeout(function(){
+        checkAttr(service, layername);
+      }, 250);
+
       //submits form to server
       $scope.submit = function (formData) {
         var options = {
-          layer: $scope.layer,
+          layer: $scope.layername,
           actions: 'addFeatures',
           params: {
             f: 'json',
@@ -93,18 +97,30 @@
       //check directive attributes
       function checkAttr(service, layer){
         try{
-          if (service instanceof AgsService){
-            throw new Error({error: 'Service is not instanceof of AgsService'});
+          if (!service instanceof AgsService){
+            throw new Error('Service is not instanceof of AgsService');
           }
           if (!service.serviceUrl){
-            throw new Error({error: 'Service is not set...please use setService() to define service', serviceUrl: service.serviceUrl});
+            throw new Error('Service is not set...please use setService() to define service');
           }
           if (!layer){
-            throw new Error({error: 'Layer is not defined', layer: layer});
+            throw new Error('Layername is not defined in directive');
+          }
+          if (!layerExist(service,layer)){
+            throw new Error('Layername does not exist');
           }
         }
         catch(err){
           console.error(err);
+        }
+      }
+
+      //Checks if layer exists in service
+      function layerExist(serive, layer){
+        return service.layers[0].service[0].layers.some(filterLayer);
+
+        function filterLayer(item){
+          return (item.id === layer || item.name === layer);
         }
       }
 

@@ -12,37 +12,7 @@
   <h1>Angular-ArcGIS-Server</h1>
   <div class="server" ng-controller="test">
     <ags-login-form server="mapsServer"></ags-login-form>
-    <h2>Server String:</h2>
-    <h3>Version:</h3>
-    <div class="folders">
-      <h2>Root Folders:</h2>
-      <ul>
-        <li>
-
-            <p>{{streams}}</p>
-
-        </li>
-      </ul>
-    </div>
-    <div class="services">
-      <h2>Root Services:</h2>
-      <ul>
-        <li>Name: Boundary</li>
-        <li>{{boundary}}</li>
-      </ul>
-      <ul>
-        <li>Name: test</li>
-        <li>{{test}}</li>
-      </ul>
-      <ul>
-        <li>Name: find</li>
-        <li>{{find}}</li>
-      </ul>
-      <ul>
-        <li>Name: Street</li>
-        <li>{{street | json}}</li>
-      </ul>
-    </div>
+    <ags-feature-form service="street_fs" layername="Project Tracking" auth="true" geojson="true"></ags-feature-form>
   </div>
 
   <div ng-view>

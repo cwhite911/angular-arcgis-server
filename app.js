@@ -8,7 +8,7 @@ angular.module('app', ['agsserver']).
 
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');
-    var streets_ms = mapsServer.setService({
+    var streets_fs = $scope.street_fs = mapsServer.setService({
       folder:'PublicUtility',
       service: 'ProjectTracking',
       server: 'FeatureServer',
@@ -17,7 +17,7 @@ angular.module('app', ['agsserver']).
 
     console.log($scope.mapsServer);
 
-    console.log(streets_ms);
+    console.log(streets_fs);
     //Auto fill function for street names
 
       var streetOptions = {
@@ -31,7 +31,7 @@ angular.module('app', ['agsserver']).
           outSR: 4326
         }
       };
-      streets_ms.request(streetOptions)
+      streets_fs.request(streetOptions)
       .then(function(data){
         $scope.street = data;
       },
