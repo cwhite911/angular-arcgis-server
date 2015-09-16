@@ -5,9 +5,11 @@
   </div>
   <div class="col-md-4">
     <form name="formData" novalidate>
-      <div class="form-group" ng-repeat="field in fields">
-        <label ng-if="field.editable" for="field.name">{{field.alias}}</label>
-        <div ng-if="field.editable" ng-switch="field.type">
+      <div ng-if="field.editable" class="form-group" ng-repeat="field in fields">
+        <label for="field.name">{{field.alias}}</label>
+        <div ng-switch="field.type">
+
+          <!--esriFieldTypeString-->
           <div ng-switch-when="esriFieldTypeString" ng-switch="field.nullable">
             <div ng-switch-when="true">
               <input ng-if="field.domain === null" type="text" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]" ng-maxlength="field.length">
@@ -22,11 +24,36 @@
               </select>
             </div>
           </div>
-          <input ng-if="field.editable" ng-switch-when="esriFieldTypeOID" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
-          <input ng-if="field.editable" ng-switch-when="esriFieldTypeInteger" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
-          <!-- <input ng-if="field.editable" ng-switch-when="esriFieldTypeString" type="text" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]"> -->
+
+          <!--esriFieldTypeSmallInteger-->
           <input ng-if="field.editable" ng-switch-when="esriFieldTypeSmallInteger" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+
+          <!--esriFieldTypeInteger-->
+          <input ng-if="field.editable" ng-switch-when="esriFieldTypeInteger" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+
+          <!--esriFieldTypeSingle-->
+
+          <!--esriFieldTypeDouble-->
+
+          <!--esriFieldTypeDate-->
           <input ng-if="field.editable" ng-switch-when="esriFieldTypeDate" type="date" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+
+          <!--esriFieldTypeOID-->
+          <input ng-if="field.editable" ng-switch-when="esriFieldTypeOID" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+
+          <!--esriFieldTypeGeometry-->
+
+          <!--esriFieldTypeBlob-->
+
+          <!--esriFieldTypeRaster-->
+
+          <!--esriFieldTypeGUID-->
+
+          <!--esriFieldTypeGlobalID-->
+
+          <!--esriFieldTypeXML-->
+
+
         </div>
       </div>
       <button type="submit" class="btn btn-default" ng-click="submit(formData)">Submit</button>
