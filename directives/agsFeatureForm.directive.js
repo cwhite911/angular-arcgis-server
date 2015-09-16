@@ -18,10 +18,10 @@
         scope: {
           service: '=', //required
           layername: '@', //required
-          auth: '=',
-          map: '=',
-          geojson: '=',
-          config: '='
+          auth: '=', //defaults false
+          map: '=', //defaults true
+          geojson: '=', //defaults false
+          config: '=' //optional
         },
         controller: controller,
         link: link
@@ -36,7 +36,8 @@
           errorMessage = $scope.errorMessage = false,
           map = $scope.map = $scope.map === false ? $scope.map : true,
           auth = $scope.auth = $scope.auth === true ? $scope.auth : false,
-          geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false;
+          geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false,
+          config = $scope.settings = $scope.config | {};
 
 
       //Checks inputs
@@ -45,6 +46,7 @@
           .then(service.getLayerDetails.bind(service))
           .then(function(layerDetails){
             console.log(layerDetails.data);
+            $scope.tableName = layerDetails.data.name;
             if (layerDetails.data.type === 'Table'){$scope.map = false}
             $scope.fields = layerDetails.data.fields;
           })

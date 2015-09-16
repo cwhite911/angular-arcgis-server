@@ -4,6 +4,7 @@
     {{formData | json}}
   </div>
   <div ng-class="{'col-md-4': map, 'col-md-12': !map}">
+    <h2>{{tableName}}</h2>
     <form name="formData" novalidate>
       <div ng-if="field.editable" class="form-group" ng-repeat="field in fields">
         <label for="field.name">{{field.alias}}</label>
