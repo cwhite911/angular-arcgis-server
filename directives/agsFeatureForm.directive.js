@@ -44,12 +44,12 @@
         checkAttr(service, layername)
           .then(service.getLayerDetails.bind(service))
           .then(function(layerDetails){
+            console.log(layerDetails.data.fields);
             $scope.fields = layerDetails.data.fields;
           })
           .catch(function(err){
             console.error(err);
           });
-
       }, 250);
 
       //submits form to server
