@@ -44,7 +44,8 @@
         checkAttr(service, layername)
           .then(service.getLayerDetails.bind(service))
           .then(function(layerDetails){
-            console.log(layerDetails.data.fields);
+            console.log(layerDetails.data);
+            if (layerDetails.data.type === 'Table'){$scope.map = false}
             $scope.fields = layerDetails.data.fields;
           })
           .catch(function(err){
