@@ -212,11 +212,10 @@
         var d, time, token, expires;
         token = $cookies.get('agsToken');
         expires = $cookies.get('agsExpires');
-
+        // expires = parseInt(expires, 10);
+        time = Date.now();
+        
         try {
-          expires = new Date(expires);
-          time = Date.now();
-
           if (!token){
             throw new Error('Token does not exist');
           }

@@ -26,17 +26,58 @@
           </div>
 
           <!--esriFieldTypeSmallInteger-->
-          <input ng-if="field.editable" ng-switch-when="esriFieldTypeSmallInteger" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+          <div ng-switch-when="esriFieldTypeSmallInteger" ng-switch="field.nullable">
+            <div ng-switch-when="true">
+              <input ng-if="field.domain === null" type="number" class="form-control" id="type.name" ng-model="formData[field.name]">
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]">
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+            </div>
+            <div ng-switch-when="false">
+              <input ng-if="field.editable" ng-if="field.domain === null" type="number" class="form-control" id="type.name" ng-model="formData[field.name]" required>
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]" required>
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+              <div class="alert alert-danger" ng-show="formData.input.$error.required">Required!</div>
+            </div>
+          </div>
 
           <!--esriFieldTypeInteger-->
-          <input ng-if="field.editable" ng-switch-when="esriFieldTypeInteger" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+          <div ng-switch-when="esriFieldTypeInteger" ng-switch="field.nullable">
+            <div ng-switch-when="true">
+              <input ng-if="field.domain === null" type="number" class="form-control" id="type.name" ng-model="formData[field.name]">
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]">
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+            </div>
+            <div ng-switch-when="false">
+              <input ng-if="field.editable" ng-if="field.domain === null" type="number" class="form-control" id="type.name" ng-model="formData[field.name]" required>
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]" required>
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+            </div>
+          </div>
 
           <!--esriFieldTypeSingle-->
 
           <!--esriFieldTypeDouble-->
 
           <!--esriFieldTypeDate-->
-          <input ng-if="field.editable" ng-switch-when="esriFieldTypeDate" type="date" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+          <!-- <input ng-if="field.editable" ng-switch-when="esriFieldTypeDate" type="date" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]"> -->
+          <div ng-switch-when="esriFieldTypeDate" ng-switch="field.nullable">
+            <div ng-switch-when="true">
+              <input ng-if="field.domain === null" type="datetime-local" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]">
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+            </div>
+            <div ng-switch-when="false">
+              <input ng-if="field.editable" ng-if="field.domain === null" type="datetime-local" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]" required>
+              <select ng-if="field.domain !== null" ng-options="item.code as item.name for item in field.domain.codedValues" id="type.name" class="form-control" ng-model="formData[field.name]" required>
+                <option value="">--Select {{field.alias}}--</option>
+              </select>
+            </div>
+          </div>
 
           <!--esriFieldTypeOID-->
           <input ng-if="field.editable" ng-switch-when="esriFieldTypeOID" type="number" class="form-control" id="type.name" placeholder="..." ng-model="formData[field.name]">
