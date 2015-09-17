@@ -54,7 +54,9 @@
               $scope.map = false;
             }
             else if (map){
-                var formMap = L.map('form-map').setView([45.528, -122.680], 13);
+                var formMap = L.map('form-map')
+                  .fitBounds([[$scope.service.initialExtent.ymax, $scope.service.initialExtent.xmax],[$scope.service.initialExtent.ymin, $scope.service.initialExtent.xmin]]);
+
                 L.tileLayer(config.BASEMAP, {
                     attribution: config.BASEMAP_ATTRIB,
                     maxZoom: 18

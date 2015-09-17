@@ -214,7 +214,7 @@
         expires = $cookies.get('agsExpires');
         // expires = parseInt(expires, 10);
         time = Date.now();
-        
+
         try {
           if (!token){
             throw new Error('Token does not exist');
@@ -227,7 +227,6 @@
           }
         }
         catch (err){
-          console.error(err);
           return false;
         }
       };
@@ -278,6 +277,8 @@
             deferred = $q.defer();
             if (res.data.error) { deferred.reject(res.data);}
             else{
+              that.initialExtent = res.data.initialExtent;
+              that.fullExtent = res.data.fullExtent;
               //Concat layers and tables array
                _layers = res.data.layers.concat(res.data.tables);
               //set layers if layer has not been set
@@ -653,7 +654,9 @@
               $scope.map = false;
             }
             else if (map){
-                var formMap = L.map('form-map').setView([45.528, -122.680], 13);
+                var formMap = L.map('form-map')
+                  .fitBounds([[$scope.service.initialExtent.ymax, $scope.service.initialExtent.xmax],[$scope.service.initialExtent.ymin, $scope.service.initialExtent.xmin]]);
+
                 L.tileLayer(config.BASEMAP, {
                     attribution: config.BASEMAP_ATTRIB,
                     maxZoom: 18
