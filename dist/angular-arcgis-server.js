@@ -647,26 +647,7 @@
       $timeout(function(){
         checkAttr(service, layername)
           .then(service.getLayerDetails.bind(service))
-          .then(function(layerDetails){
-            console.log(layerDetails.data);
-            $scope.tableName = layerDetails.data.name;
-            if (layerDetails.data.type === 'Table'){
-              $scope.map = false;
-            }
-            else if (map){
-                var formMap = L.map('form-map')
-                  .fitBounds([[$scope.service.initialExtent.ymax, $scope.service.initialExtent.xmax],[$scope.service.initialExtent.ymin, $scope.service.initialExtent.xmin]]);
-
-                L.tileLayer(config.BASEMAP, {
-                    attribution: config.BASEMAP_ATTRIB,
-                    maxZoom: 18
-                }).addTo(formMap);
-            }
-            else {
-              map = map;
-            }
-            $scope.fields = layerDetails.data.fields;
-          })
+          .then(generateMap)
           .catch(function(err){
             console.error(err);
           });
@@ -759,6 +740,27 @@
         }
       }
 
+      //Creates map
+      function generateMap(layerDetails){
+        console.log(layerDetails.data);
+        $scope.tableName = layerDetails.data.name;
+        if (layerDetails.data.type === 'Table'){
+          $scope.map = false;
+        }
+        else if (map){
+            var formMap = L.map('form-map')
+              .fitBounds([[$scope.service.initialExtent.ymax, $scope.service.initialExtent.xmax],[$scope.service.initialExtent.ymin, $scope.service.initialExtent.xmin]]);
+
+            L.tileLayer(config.BASEMAP, {
+                attribution: config.BASEMAP_ATTRIB,
+                maxZoom: 18
+            }).addTo(formMap);
+        }
+        else {
+          map = map;
+        }
+        $scope.fields = layerDetails.data.fields;
+      }
 
       //Checks request options
       function checkOptions(options){
