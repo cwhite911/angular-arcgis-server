@@ -631,13 +631,16 @@
       var token,
           service = $scope.service,
           layername = $scope.layername,
+          configDefualts = {
+            BASEMAP: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            BASEMAP_ATTRIB: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          },
           //Set defaults
           errorMessage = $scope.errorMessage = false,
           map = $scope.map = $scope.map === false ? $scope.map : true,
           auth = $scope.auth = $scope.auth === true ? $scope.auth : false,
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false,
-          config = $scope.settings = $scope.config | {};
-
+          config = $scope.config || configDefualts;
 
       //Checks inputs
       $timeout(function(){
@@ -646,7 +649,19 @@
           .then(function(layerDetails){
             console.log(layerDetails.data);
             $scope.tableName = layerDetails.data.name;
-            if (layerDetails.data.type === 'Table'){$scope.map = false}
+            if (layerDetails.data.type === 'Table'){
+              $scope.map = false;
+            }
+            else if (map){
+                var formMap = L.map('form-map').setView([45.528, -122.680], 13);
+                L.tileLayer(config.BASEMAP, {
+                    attribution: config.BASEMAP_ATTRIB,
+                    maxZoom: 18
+                }).addTo(formMap);
+            }
+            else {
+              map = map;
+            }
             $scope.fields = layerDetails.data.fields;
           })
           .catch(function(err){

@@ -26,7 +26,8 @@
   ],
   "dependencies": {
     "angular": "~1.4.5",
-    "angular-cookies": "~1.4.5"
+    "angular-cookies": "~1.4.5",
+    "esri-leaflet": "~1.0.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.5"

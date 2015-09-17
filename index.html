@@ -7,17 +7,22 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" />
+  <link rel="stylesheet" href="directives/agsFeatureForm.css" />
+
+
 </head>
 <body ng-app="app">
   <h1>Angular-ArcGIS-Server</h1>
   <div class="server" ng-controller="test">
     <ags-login-form server="mapsServer"></ags-login-form>
-    <ags-feature-form service="street_fs" layername="RPUD.PTK_DOCUMENTS" auth="true" geojson="true"></ags-feature-form>
+    <ags-feature-form service="street_fs" layername="Project Tracking" auth="true" geojson="true"></ags-feature-form>
   </div>
 
   <div ng-view>
 
   </div>
+  <script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script>
    <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
    <![endif]-->
@@ -26,6 +31,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+
+  <script src="bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
   <!-- <script src="angular-arcgis-server.js"></script>
   <script src="/directives/login/agsLoginForm.js"></script> -->
   <script src="dist/angular-arcgis-server.js"></script>
