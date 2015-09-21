@@ -120,6 +120,15 @@
         url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
         var newService = new Server(this.conn);
         newService.serviceUrl = url;
+
+        $http.get(url, {params: { f: 'json'}}).then(function(res){
+          var join = res.data.layers.concat(res.data.tables);
+          newService.layers = join;
+          return newService;
+        })
+        .catch(function(err){
+          return newService;
+        });
         return newService;
       };
 
@@ -282,14 +291,7 @@
               //Concat layers and tables array
                _layers = res.data.layers.concat(res.data.tables);
               //set layers if layer has not been set
-              that.layers = that.layers.length === 0 ? [{
-                folder: options.folder,
-                service: [{
-                  name: options.service,
-                  server: options.server,
-                  layers: _layers
-                }]
-              }] : that.layers;
+              that.layers = that.layers.length === 0 ? _layers : that.layers;
 
 
               //Checks if layer option is set if not is checks action tpye
@@ -351,7 +353,7 @@
         var deferred = $q.defer();
 
         if (Array.isArray(layers) && layers.length > 0){
-          var filtered = layers[0].service[0].layers.filter(filterId);
+          var filtered = layers.filter(filterId);
           if (filtered.length === 1){
             deferred.resolve(filtered[0]);
           }
@@ -733,7 +735,7 @@
 
       //Checks if layer exists in service
       function layerExist(serive, layer){
-        return service.layers[0].service[0].layers.some(filterLayer);
+        return service.layers.some(filterLayer);
 
         function filterLayer(item){
           return (item.id === layer || item.name === layer);
@@ -759,7 +761,7 @@
         else {
           map = map;
         }
-        $scope.fields = layerDetails.data.fields;
+        $scope.fields = setRelationships(layerDetails.data);//layerDetails.data.fields;
       }
 
       //Checks request options
@@ -785,6 +787,34 @@
           console.error(err);
         }
       }
+
+      //Generate Relationship selections
+      function setRelationships(layer){
+        var relationships = layer.relationships,
+            fields = layer.fields;
+        if (Array.isArray(relationships) && relationships > 0){
+          relationships.forEach(function(rel){
+            switch (rel.cardinality) {
+              case 'esriRelCardinalityOneToMany':
+                if (rel.role === 'esriRelRoleDestination'){
+                  console.log(rel);
+                }
+                break;
+              default:
+
+            }
+          });
+        }
+        else {
+          return fields;
+        }
+      }
+
+      //Gets relationship data from server
+      function getRelationship(){
+
+      }
+
 
     }
 

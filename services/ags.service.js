@@ -115,6 +115,15 @@
         url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
         var newService = new Server(this.conn);
         newService.serviceUrl = url;
+
+        $http.get(url, {params: { f: 'json'}}).then(function(res){
+          var join = res.data.layers.concat(res.data.tables);
+          newService.layers = join;
+          return newService;
+        })
+        .catch(function(err){
+          return newService;
+        });
         return newService;
       };
 
@@ -277,14 +286,7 @@
               //Concat layers and tables array
                _layers = res.data.layers.concat(res.data.tables);
               //set layers if layer has not been set
-              that.layers = that.layers.length === 0 ? [{
-                folder: options.folder,
-                service: [{
-                  name: options.service,
-                  server: options.server,
-                  layers: _layers
-                }]
-              }] : that.layers;
+              that.layers = that.layers.length === 0 ? _layers : that.layers;
 
 
               //Checks if layer option is set if not is checks action tpye
@@ -346,7 +348,7 @@
         var deferred = $q.defer();
 
         if (Array.isArray(layers) && layers.length > 0){
-          var filtered = layers[0].service[0].layers.filter(filterId);
+          var filtered = layers.filter(filterId);
           if (filtered.length === 1){
             deferred.resolve(filtered[0]);
           }

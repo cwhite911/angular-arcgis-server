@@ -8,7 +8,9 @@ angular.module('app', ['agsserver']).
 
     // console.log(streetServer);
     // var streetCache = $cacheFactory('streetCache');
-    var streets_fs = $scope.street_fs = mapsServer.setService({
+
+
+    var street_fs = $scope.street_fs = mapsServer.setService({
       folder:'PublicUtility',
       service: 'ProjectTracking',
       server: 'FeatureServer',
@@ -16,28 +18,30 @@ angular.module('app', ['agsserver']).
 
 
     console.log($scope.mapsServer);
+    console.log($scope.street_fs);
 
-    console.log(streets_fs);
+    // console.log(streets_fs);
     //Auto fill function for street names
 
-      var streetOptions = {
-        layer: 'Project Tracking',
-        geojson: true,
-        actions: 'query',
-        params: {
-          f: 'json',
-          where: 'OBJECTID > 1',
-          returnGeometry: true,
-          outSR: 4326
-        }
-      };
-      streets_fs.request(streetOptions)
-      .then(function(data){
-        $scope.street = data;
-      },
-      function(err){
-        console.log(err);
-      });
+      // var streetOptions = {
+      //   layer: 'Project Tracking',
+      //   geojson: true,
+      //   actions: 'query',
+      //   params: {
+      //     f: 'json',
+      //     where: 'OBJECTID > 1',
+      //     returnGeometry: true,
+      //     outSR: 4326
+      //   }
+      // };
+      // street_fs.request(streetOptions)
+      // .then(function(data){
+      //   $scope.street = data;
+      // },
+      // function(err){
+      //   console.log(err);
+      // });
+
 
       //
       // var streetOptions2 = {

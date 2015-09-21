@@ -133,7 +133,7 @@
 
       //Checks if layer exists in service
       function layerExist(serive, layer){
-        return service.layers[0].service[0].layers.some(filterLayer);
+        return service.layers.some(filterLayer);
 
         function filterLayer(item){
           return (item.id === layer || item.name === layer);
@@ -159,7 +159,7 @@
         else {
           map = map;
         }
-        $scope.fields = layerDetails.data.fields;
+        $scope.fields = setRelationships(layerDetails.data);//layerDetails.data.fields;
       }
 
       //Checks request options
@@ -185,6 +185,34 @@
           console.error(err);
         }
       }
+
+      //Generate Relationship selections
+      function setRelationships(layer){
+        var relationships = layer.relationships,
+            fields = layer.fields;
+        if (Array.isArray(relationships) && relationships > 0){
+          relationships.forEach(function(rel){
+            switch (rel.cardinality) {
+              case 'esriRelCardinalityOneToMany':
+                if (rel.role === 'esriRelRoleDestination'){
+                  console.log(rel);
+                }
+                break;
+              default:
+
+            }
+          });
+        }
+        else {
+          return fields;
+        }
+      }
+
+      //Gets relationship data from server
+      function getRelationship(){
+
+      }
+
 
     }
 
