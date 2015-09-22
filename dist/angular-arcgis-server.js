@@ -115,15 +115,23 @@
       */
 
       Server.prototype.setService = function (options) {
+        var config, token;
         checkOptions(options);
         var baseUrl = this.getConn(),
         url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
         var newService = new Server(this.conn);
         newService.serviceUrl = url;
-
-        $http.get(url, {params: { f: 'json'}}).then(function(res){
+        config ={params: { f: 'json'}};
+        if (options.auth){
+          // while (this.isTokenValid()){
+            token = $cookies.get('agsToken');
+            config = {params: { f: 'json', token: token}};
+          // }
+        }
+        $http.get(url, config).then(function(res){
           var join = res.data.layers.concat(res.data.tables);
           newService.layers = join;
+          newService.fullExtent = res.data.fullExtent;
           return newService;
         })
         .catch(function(err){
@@ -617,6 +625,7 @@
       return {
         restrict: 'E',
         templateUrl: '/directives/agsFeatureForm.directive.html',
+        transclude: true,
         scope: {
           service: '=', //required
           layername: '@', //required
@@ -631,7 +640,7 @@
     }
 
     function controller($scope, $cookies, $timeout, $q, AgsService){
-      var token,
+      var token, formMap,
           service = $scope.service,
           layername = $scope.layername,
           configDefualts = {
@@ -645,6 +654,8 @@
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false,
           config = $scope.config || configDefualts;
 
+
+        $scope.formData = {};
       //Checks inputs
       $timeout(function(){
         checkAttr(service, layername)
@@ -657,12 +668,19 @@
 
       //submits form to server
       $scope.submit = function (formData) {
+        var marker = $scope.marker.getLatLng();
         var options = {
           layer: $scope.layername,
           actions: 'addFeatures',
           params: {
             f: 'json',
-            features: []
+            features: [{
+              attributes: formData,
+              geometry: {
+                x: marker.lng,
+                y: marker.lat
+              }
+            }]
           }
         };
 
@@ -673,13 +691,14 @@
 
         checkOptions(options);
 
-        $scope.server.request(options)
+        $scope.service.request(options)
           .then(function (res) {
             if (res.error){
               $scope.errorMessage = true;
             }
             else {
-              console.log(res);
+              $scope.formData = {};
+              $scope.marker.removeFrom(formMap);
             }
           })
           .catch(function(err){
@@ -744,19 +763,33 @@
 
       //Creates map
       function generateMap(layerDetails){
+
         console.log(layerDetails.data);
         $scope.tableName = layerDetails.data.name;
         if (layerDetails.data.type === 'Table'){
           $scope.map = false;
         }
         else if (map){
-            var formMap = L.map('form-map')
-              .fitBounds([[$scope.service.initialExtent.ymax, $scope.service.initialExtent.xmax],[$scope.service.initialExtent.ymin, $scope.service.initialExtent.xmin]]);
+            formMap = L.map('form-map')
+              .fitBounds([[$scope.service.fullExtent.ymax, $scope.service.fullExtent.xmax],[$scope.service.fullExtent.ymin, $scope.service.fullExtent.xmin]]);
 
             L.tileLayer(config.BASEMAP, {
                 attribution: config.BASEMAP_ATTRIB,
                 maxZoom: 18
             }).addTo(formMap);
+            formMap.on('click', function(e){
+              console.log($scope.marker);
+              if (!$scope.marker){
+                $scope.marker = L.marker(e.latlng, {
+                  draggable: true
+                }).addTo(formMap);
+              }
+              else{
+                $scope.marker.setLatLng(e.latlng);
+                $scope.marker.update();
+                $scope.marker.addTo(formMap);
+              }
+            });
         }
         else {
           map = map;

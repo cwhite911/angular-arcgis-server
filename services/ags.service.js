@@ -110,15 +110,23 @@
       */
 
       Server.prototype.setService = function (options) {
+        var config, token;
         checkOptions(options);
         var baseUrl = this.getConn(),
         url = baseUrl + '/' + options.folder + '/' + options.service + '/' + options.server;
         var newService = new Server(this.conn);
         newService.serviceUrl = url;
-
-        $http.get(url, {params: { f: 'json'}}).then(function(res){
+        config ={params: { f: 'json'}};
+        if (options.auth){
+          // while (this.isTokenValid()){
+            token = $cookies.get('agsToken');
+            config = {params: { f: 'json', token: token}};
+          // }
+        }
+        $http.get(url, config).then(function(res){
           var join = res.data.layers.concat(res.data.tables);
           newService.layers = join;
+          newService.fullExtent = res.data.fullExtent;
           return newService;
         })
         .catch(function(err){
