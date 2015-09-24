@@ -42,7 +42,7 @@
           map = $scope.map = $scope.map === false ? $scope.map : true,
           auth = $scope.auth = $scope.auth === true ? $scope.auth : false,
           geojson = $scope.geojson = $scope.geojson === true ? $scope.geojson : false,
-          config = $scope.config || configDefualts;
+          config = $scope.config ? angular.extend(configDefualts, $scope.config) : configDefualts;
 
 
         $scope.formData = {};
@@ -160,15 +160,14 @@
           $scope.map = false;
         }
         else if (map){
-            formMap = L.map('form-map')
-              .fitBounds([[$scope.service.fullExtent.ymax, $scope.service.fullExtent.xmax],[$scope.service.fullExtent.ymin, $scope.service.fullExtent.xmin]]);
+            formMap = L.map('form-map').setView($scope.config.center, 15);
+              // .fitBounds([[$scope.service.fullExtent.ymax, $scope.service.fullExtent.xmax],[$scope.service.fullExtent.ymin, $scope.service.fullExtent.xmin]]);
 
             L.tileLayer(config.BASEMAP, {
                 attribution: config.BASEMAP_ATTRIB,
                 maxZoom: 18
             }).addTo(formMap);
             formMap.on('click', function(e){
-              console.log($scope.marker);
               if (!$scope.marker){
                 $scope.marker = L.marker(e.latlng, {
                   draggable: true

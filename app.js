@@ -16,7 +16,12 @@ angular.module('app', ['agsserver']).
       // auth: true
     });
 
-
+    $scope.mapConfig = {
+      center: [
+          34.03495050416125,
+          -77.89332389831543
+        ]
+    }
     // console.log(streets_fs);
     //Auto fill function for street names
 

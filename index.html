@@ -16,12 +16,9 @@
   <h1>Angular-ArcGIS-Server</h1>
   <div class="server" ng-controller="test">
     <!-- <ags-login-form server="mapsServer"></ags-login-form> -->
-    <!-- <ags-feature-form service="street_fs" layername="Trench" auth="false" geojson="true"></ags-feature-form> -->
-    <ags-feature-form service="street_fs" layername="Survey" auth="false" geojson="true"></ags-feature-form>
+    <!-- <ags-feature-form service="street_fs" layername="Trench" auth="false" geojson="true" config="mapConfig"></ags-feature-form> -->
+    <ags-feature-form service="street_fs" layername="Survey" auth="false" geojson="true" config="mapConfig"></ags-feature-form>
     <pre>{{survey}}</pre>
-    <!-- <ags-feature-form service="street_fs" layername="ZoneLine" auth="false" geojson="true"></ags-feature-form> -->
-    <!-- <ags-feature-form service="street_fs" layername="Segment" auth="false" geojson="true"></ags-feature-form> -->
-    <!-- <ags-feature-form service="street_fs" layername="ZonePoly" auth="false" geojson="true"></ags-feature-form> -->
   </div>
 
   <div ng-view>
